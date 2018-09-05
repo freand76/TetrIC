@@ -6,12 +6,12 @@ StartEnterHigh:
 
 	_JAL	InitStars
 	_JAL	PlayBeat
-	
+
 	_JAL	GetScore
 	mov	$a0,$v0
 	_JAL	OnHighScoreList
 	_BEQZ	$v0,StartEnterHigh_Done
-		
+
 	_LI	$t0,JoyRepeatWait
 	_LI	$t1,0x000a00			; Filter = 00, RepeatVal = 0a, Accelerate = 2
 	nop
@@ -36,7 +36,7 @@ EnterHigh_ClearNameLoop:
 
 	_STA	$zero,EnterHighValX
 	_STA	$zero,EnterHighValY
-	
+
 	_STA	$zero,EnterHighPos
 	_STA	$zero,CircleAngle
 	_STA	$zero,EnterHighDone
@@ -58,7 +58,7 @@ StartEnterHigh_Loop:
 	_STA	$zero,EnterHighTextTarget
 	_STA	$zero,EnterHighNameTarget
 	_JAL	EnterHighFade
-	
+
 	_JAL	CopyNameToString
 
 	_JAL	GetScore
@@ -73,18 +73,18 @@ StartEnterHigh_Done:
 
 	POP	$ra
 	_RTS
-	
+
 EnterHighFrame:
 	PUSH	$ra
 	_JAL	Rnd
 	_JAL	WaitNextFrame
 	_JAL	FadeBeat
 	_JAL	EnterHighJoyStick
-	
+
 	_JAL	GetWorkScreen
 	mov	$a0,$v0
 	_JAL	ClearScreen
-	
+
 	_JAL	Stars
 	_JAL	DrawEnterHighText
 	_JAL	DrawEnterHighName
@@ -96,7 +96,7 @@ EnterHighFrame_DontDrawSelection:
 	_RTS
 
 EnterHighFade:
-	PUSH	$ra	
+	PUSH	$ra
 	PUSH	$s0
 EnterHighFade_Loop:
 	_JAL	WaitNextFrame
@@ -112,7 +112,7 @@ EnterHighFade_Loop:
 	_JAL	DrawSelectionBox
 	or	$s0,$s0,$v0
 	_BNEZ	$s0,EnterHighFade_Loop
-	
+
 	POP	$s0
 	POP	$ra
 	_RTS
@@ -127,7 +127,7 @@ ENTERHIGH_TOP = 50
 ;ENTERHIGH_ROWSPACE = 20
 ENTERHIGH_LETTERSPACEX = 16
 ENTERHIGH_LETTERSPACEY = 20
- 
+
 DrawEnterHighText:
 	PUSH	$ra
 	PUSH	$s0
@@ -136,12 +136,12 @@ DrawEnterHighText:
 	PUSH	$s3
 	PUSH	$s4
 	PUSH	$s5
-	
+
 	_LDA	$t0,EnterHighTextColor
 	_BEQZ	$t0,DrawEnterHighText_BlackText
-	
+
 	lui	$s5,0xffff
-	
+
 	movi	$s0,ENTERHIGH_LEFT
 	movi	$s1,ENTERHIGH_TOP
 	_LI	$s2,EnterHighLetters
@@ -169,10 +169,10 @@ DrawEnterHighText_NoChangeLine:
 	mov	$a1,$s0
 	mov	$a2,$s1
 	_LDA	$a3,EnterHighTextColor
-	or	$a3,$a3,$s5	
+	or	$a3,$a3,$s5
 	_JAL	PrintString
 
-DrawEnterHighText_BlackText:	
+DrawEnterHighText_BlackText:
 	_LDA	$a0,EnterHighTextColor
 	_LDA	$a1,EnterHighTextTarget
 	_JAL	FadeSourceToDest
@@ -206,7 +206,7 @@ DrawEnterHighName:
 
 	_LDA	$t0,EnterHighNameColor
 	_BEQZ	$t0,DrawEnterHighName_BlackText
-	
+
 	clr	$s0
 	movi	$s1,160
 	_LDA	$t0,EnterHighPos
@@ -228,7 +228,7 @@ DrawEnterHighName_Loop:
 	_J	DrawEnterHighName_Loop
 
 EnterHighName_Done:
-DrawEnterHighName_BlackText:	
+DrawEnterHighName_BlackText:
 	_LDA	$a0,EnterHighNameColor
 	_LDA	$a1,EnterHighNameTarget
 	_JAL	FadeSourceToDest
@@ -267,20 +267,20 @@ DrawSelectionBox:
 	PUSH	$s5
 	PUSH	$s6
 	PUSH	$s7
-	
+
 	movi	$s0,ENTERHIGH_LEFT+4
 	movi	$s1,ENTERHIGH_TOP+8
-	
+
 	_LDA	$t0,EnterHighValX
 	sll	$t1,$t0,4
 	add	$s0,$s0,$t1
-	
+
 	_LDA	$t2,EnterHighValY
 	sll	$t3,$t2,2
 	add	$s1,$s1,$t3
 	sll	$t3,$t3,2
 	add	$s1,$s1,$t3
-	
+
 	clr	$s4
 	movi	$t1,4
 	_BNE	$t1,$t2,DrawSelectionBox_NotWide
@@ -301,11 +301,11 @@ DrawSelectionBox_Loop:
 	sra	$t0,$v0,12
 	add	$s6,$s0,$t0
 
-	mov	$a0,$s2	
+	mov	$a0,$s2
 	_JAL	Sin
 	sra	$t0,$v0,13
 	add	$s7,$s1,$t0
-	
+
 	mov	$a0,$s5
 	_JAL	SetColor
 
@@ -313,10 +313,10 @@ DrawSelectionBox_Loop:
 	mov	$a1,$s7
 	_JAL	Point
 
-	
-	addi	$s2,$s2,CIRCLE_STEP	
+
+	addi	$s2,$s2,CIRCLE_STEP
 	addi	$s3,$s3,-1
-		
+
 	addi	$s5,$s5,-CIRCLE_COLOR_STEP
 	slt	$t0,$s5,$zero
 	_BNEZ	$t0,DrawSelectionBox_Done
@@ -348,27 +348,27 @@ DrawSelectionBox_DontFade:
 	POP	$s3
 	POP	$s2
 	POP	$s1
-	POP	$s0	
+	POP	$s0
 	POP	$ra
 	_RTS
-	
+
 EnterHighJoyStick:
 	PUSH	$ra				; Store to stack
-	PUSH	$s0	
+	PUSH	$s0
 	_JAL	CheckJoystick
 	mov	$s0,$v0
 
 	movi	$t0,0x2d			; 00101101
 	and	$t0,$t0,$s0
 	_BEQZ	$t0,EnterHigh_NoMoveSound
-	
+
 	movi	$a0,FX_ENTERHIGH_MOVE
 	_JAL	PlaySampleCh1
 EnterHigh_NoMoveSound:
 	movi	$t0,0xd2			; 11010010
 	and	$t0,$t0,$s0
 	_BEQZ	$t0,EnterHigh_NoButSound
-	
+
 	movi	$a0,FX_ENTERHIGH_BUTTON
 	_JAL	PlaySampleCh1
 EnterHigh_NoButSound:
@@ -397,7 +397,7 @@ noEnterHighDown:
 	andi	$t0,$t5,1			; LSB to t0
 	srl	$t5,$t5,1			; Shift out LSB
 	_BEQZ	$t0,noEnterHighRight		; Check LSB
-	addi	$t2,$t2,1			; Right	
+	addi	$t2,$t2,1			; Right
 	movi	$t6,1
 noEnterHighRight:
 	andi	$t0,$t5,1			; LSB to t0
@@ -409,7 +409,7 @@ noEnterHighButB:
 	srl	$t5,$t5,1			; Shift out LSB
 	_BEQZ	$t0,noEnterHighLeft		; Check LSB
 	addi	$t2,$t2,-1			; Right
-	movi	$t6,-1	
+	movi	$t6,-1
 noEnterHighLeft:
 	andi	$t0,$t5,1			; LSB to t0
 	srl	$t5,$t5,1			; Shift out LSB
@@ -479,7 +479,7 @@ noSpecialButUpDown2:
 	or	$t0,$t0,$t3
 	moviu	$t1,0x0604
 	_BNE	$t0,$t1,NotDel
-Del:	
+Del:
 	_LDA	$t5,EnterHighPos
 	_BEQZ	$t5,ButtonEnd
 	addi	$t5,$t5,-1
@@ -492,7 +492,7 @@ End:
 	_BNE	$t0,$t1,NotEnd
 	_STA	$t4,EnterHighDone
 	_J	ButtonEnd
-NotEnd:	
+NotEnd:
 Letter:
 	sll	$t5,$t3,3
 	sll	$t6,$t3,1
@@ -508,18 +508,18 @@ Letter:
 	_STA	$t5,EnterHighPos
 ButtonEnd:
 	POP	$s0
-	POP	$ra	
+	POP	$ra
 	_RTS				; Return from subroutine
 
 CopyNameToString:
 	_LI	$t0,EnterHighName
 	_LI	$t1,ListName
-	
+
 	movi	$t8,2
 CopyNameToString_Loop:
 	movi	$t9,4
 	clr	$t2
-CopyNameToString_WordLoop:	
+CopyNameToString_WordLoop:
 	addi	$t9,$t9,-1
 	_LW	$t3,0($t0)
 	sll	$t7,$t9,3
@@ -532,15 +532,15 @@ CopyNameToString_WordLoop:
 	addi	$t8,$t8,-1
 	_BNEZ	$t8,CopyNameToString_Loop
 	_RTS
-	
+
 GetEnterHighName:
 	_LI	$v0,ListName
 	_RTS
-	
+
 EnterHighLetters:
 	.dc	0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,0x49,0x4a
 	.dc	0x4b,0x4c,0x4d,0x4e,0x4f,0x50,0x51,0x52,0x53,0x54
-	.dc 	0x55,0x56,0x57,0x58,0x59,0x5a,0x2c,0x2e,0x21,0x3f
+	.dc	0x55,0x56,0x57,0x58,0x59,0x5a,0x2c,0x2e,0x21,0x3f
 	.dc	0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39
 	.dc	0x2d,0x2f,0x3c,0x3e,0x24,0x25
 
@@ -549,7 +549,7 @@ EnterHighSpecialText:
 
 EnterHighName:	.dc	0,0,0,0,0,0,0,0,0
 ListName:	.dc	0,0,0
-EnterHighPos:	.dc	0		
+EnterHighPos:	.dc	0
 
 EnterHighValX:	.dc	0
 EnterHighValY:	.dc	0

@@ -1,4 +1,3 @@
-	
 	.MACRO NOP10	; a nice little 10 nop macro
 	nop
 	nop
@@ -19,7 +18,7 @@ BootLoadStart:				; It all starts here
 	nop
 	nop
 
-InitGfxBox:	
+InitGfxBox:
 
 	movi	$s1,1		; Wait before it is safe to write gfxbox
 	mfc1	$s2,$s1
@@ -51,7 +50,7 @@ WaitSafe1:
 	sw	$s2, GFX_WIDTH($gfx)
 	sw	$s3, GFX_HEIGHT($gfx)
 	sw	$s4, GFX_TOPPOS($gfx)
-	
+
 
 CopyToHighMem:
 	_LI	$s1,BOOTLOADER_START	; This is where the bootloader is
@@ -66,19 +65,19 @@ CopyToHighMem_Loop:
 	sw	$s4,0($s2)		; Write word to high memory
 	addi	$s2,$s2,1			; Next write address
 	addi	$s3,$s3,-1		; Decrease word counter
-	bnez	$s3,CopyToHighMem_Loop	; Are there any bytes left ? 
+	bnez	$s3,CopyToHighMem_Loop	; Are there any bytes left ?
 	nop
 	nop
 	nop
-	
+
 	j	BOOTLOADER_ADDR		; Jump to high mem bootloader
 	nop
 	nop
 	nop
 
 BOOTLOADER_START:		; This is the start address of the bootloader
-	
-#GreenMem:	
+
+#GreenMem:
 #	_LI	$s1,0x07e007e0	; A nice and clear green color
 
 	_LI	$s4,BootLogo
@@ -98,7 +97,7 @@ Green_loop:
 	nop
 	nop
 	nop
-	
+
 	movi	$s1,1		; Wait before it is safe to write gfxbox
 	mfc1	$s2,$s1
 WaitSafe2:
@@ -107,15 +106,15 @@ WaitSafe2:
 	nop
 	nop
 	nop
-	
+
 	movi	$t0,1
 	mfc1	$a0,$t0
 	movi	$a1,BLOCK_STARTPOS
 	movi	$a2,1
-SetAddressPointer:	
-	movi	$s1,0		; $s1 = Startaddress for memfill	
+SetAddressPointer:
+	movi	$s1,0		; $s1 = Startaddress for memfill
 	_LI	$s2,0x534c5554	; $s2 = Word to end transmission (SLUT)
-InitWord:		
+InitWord:
 	movi	$s3,4		; $s3 = NofBytes
 	clr	$s4		; $s4 = WordResult
 InitByte:
@@ -148,16 +147,16 @@ SameFrame:
 	add	$a2,$a2,$t0
 	and	$t2,$a2,$t1
 	add	$a1,$a1,$t2
-	
-# 115200 bps 
+
+# 115200 bps
 # 24Mhz = 24000000 Hz
 # 24000000 / 115200 = 208 clk / bit
 # Wait for start bit
 # while (not done)
-# 	Wait 1.5 bit time (312 clk)
-# 	for (k=1;k=9;k++)
-# 		Sample bit
-# 		Wait 1.0 bit time (208 clk)
+#	Wait 1.5 bit time (312 clk)
+#	for (k=1;k=9;k++)
+#		Sample bit
+#		Wait 1.0 bit time (208 clk)
 #	end for
 # end while
 
@@ -203,24 +202,24 @@ Sample:
 	sll	$t0,$t0,25		; LSB in high byte
 	srl	$s5,$s5,1		; Shift byte result right
 	or	$s5,$s5,$t0		; Or current bit value
-			
+
 	addi	$s6,$s6,-1		; Dec NofBits
 	bnez	$s6,WaitOneBit		; Last Bit in Byte ?
 	nop
 	nop
 	nop
-	
+
 	sll	$s5,$s5,1			; Skip stop bit
 	srl	$s5,$s5,24		; Shift to low byte
 	sll	$s4,$s4,8			; Shift word result left
 	or	$s4,$s4,$s5		; Or current byte value
-		
+
 	addi	$s3,$s3,-1		; Dec NofBytes
 	bnez	$s3,InitByte		; Last Byte in Word ?
 	nop
 	nop
 	nop
-	
+
 	sw	$s4,0($s1)		; Store Word
 	addi	$s1,$s1,1			; Add Address pointer
 	bne	$s4,$s2,InitWord		; Last word in transmission ?
@@ -237,7 +236,7 @@ WaitSafe3:
 	nop
 	nop
 	nop
-	
+
 	movi	$s2, 3			; Reset Pixread
 	movi	$s3, 320		; Reset Width
 	movi	$s4, 256		; Reset Height
@@ -273,7 +272,7 @@ BootLogo:	.dc	0x00010001,0x00010001,0x00010001,0x00010001
 		.dc	0x00040004,0x00040004,0x00040004,0x00040004
 		.dc	0x00020002,0x00020002,0x00020002,0x00020002
 		.dc	0x00010001,0x00010001,0x00010001,0x00010001
-		
+
 BOOTLOADER_END:
 
 MEMEND_ADDR = 0x40000

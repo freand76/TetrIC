@@ -57,13 +57,13 @@ CopyActiveToWork_Loop:
 	nop
 	lw	$t9,6($t0)
 	nop
-	sw	$t3,0($t1)	
-	sw	$t4,1($t1)	
-	sw	$t5,2($t1)	
-	sw	$t6,3($t1)	
-	sw	$t7,4($t1)	
-	sw	$t8,5($t1)	
-	sw	$t9,6($t1)	
+	sw	$t3,0($t1)
+	sw	$t4,1($t1)
+	sw	$t5,2($t1)
+	sw	$t6,3($t1)
+	sw	$t7,4($t1)
+	sw	$t8,5($t1)
+	sw	$t9,6($t1)
 	lw	$t3,7($t0)
 	nop
 	lw	$t4,8($t0)
@@ -78,27 +78,27 @@ CopyActiveToWork_Loop:
 	nop
 	lw	$t9,13($t0)
 	nop
-	sw	$t3,7($t1)	
-	sw	$t4,8($t1)	
-	sw	$t5,9($t1)	
-	sw	$t6,10($t1)	
-	sw	$t7,11($t1)	
-	sw	$t8,12($t1)	
-	sw	$t9,13($t1)	
+	sw	$t3,7($t1)
+	sw	$t4,8($t1)
+	sw	$t5,9($t1)
+	sw	$t6,10($t1)
+	sw	$t7,11($t1)
+	sw	$t8,12($t1)
+	sw	$t9,13($t1)
 	lw	$t3,14($t0)
 	nop
 	lw	$t4,15($t0)
 	nop
-	sw	$t3,14($t1)	
-	sw	$t4,15($t1)	
+	sw	$t3,14($t1)
+	sw	$t4,15($t1)
 	addi	$t0,$t0,0x10
 	addi	$t1,$t1,0x10
 	_BNE	$t0,$t2,CopyActiveToWork_Loop
 	_RTS
-	
+
 ScreenFadeList:
 	.dc	FadeOutLeftRight,FadeOutTopDown
-ScreenFadeList_End:	
+ScreenFadeList_End:
 
 SCREENFADELIST_SIZE = ScreenFadeList_End-ScreenFadeList
 
@@ -131,10 +131,10 @@ FadeOutLeftRight:
 
 	_JAL	WaitNextFrameNoSwap
 	_JAL	CopyActiveToWork
-	
+
 	movi	$s1,-LEFTRIGHT_STEP
 	movi	$s0,LEFTRIGHT_FRAMES
-FadeOutLeftRight_FrameLoop:	
+FadeOutLeftRight_FrameLoop:
 	_LDA	$t0,WorkScreen
 	movi	$t9,LEFTRIGHT_ROWS/LEFTRIGHT_HEIGHT/2
 FadeOutLeftRight_RowLoop:
@@ -149,13 +149,13 @@ FadeOutLeftRight_ColLoop:
 	_BEQZ	$t4,FadeOutLeftRight_OutsideScreen
 	add	$t4,$t1,$t3
 	sub	$t5,$t2,$t3
-	
-	
-	movi	$t7,LEFTRIGHT_HEIGHT	
+
+
+	movi	$t7,LEFTRIGHT_HEIGHT
 FadeOutLeftRight_BlockLoop:
 
-	_LI	$t6,0x20000	; Check if address t4 or t5 ever writes outside 
-	slt	$at,$t4,$t6	
+	_LI	$t6,0x20000	; Check if address t4 or t5 ever writes outside
+	slt	$at,$t4,$t6
 	_BNEZ	$at,Error	; if so jump to foreverloop error
 	slt	$at,$t5,$t6
 	_BNEZ	$at,Error
@@ -183,7 +183,7 @@ FadeOutLeftRight_OutsideScreen:
 	_JAL	WaitNextFrame
 	addi	$s1,$s1,LEFTRIGHT_STEP
 	_BNEZ	$s0,FadeOutLeftRight_FrameLoop
-		
+
 	POP	$s1
 	POP	$s0
 	POP	$ra
@@ -205,7 +205,7 @@ FadeOutTopDown:
 
 	movi	$s1,-TOPDOWN_STEP
 	movi	$s0,TOPDOWN_FRAMES
-FadeOutTopDown_FrameLoop:	
+FadeOutTopDown_FrameLoop:
 	_LDA	$t0,WorkScreen
 	movi	$t9,TOPDOWN_COLS/TOPDOWN_WIDTH/2
 FadeOutTopDown_ColLoop:
@@ -218,19 +218,19 @@ FadeOutTopDown_RowLoop:
 	_BNEZ	$t4,FadeOutTopDown_OutsideScreen
 	slti	$t4,$t3,256
 	_BEQZ	$t4,FadeOutTopDown_OutsideScreen
-	
+
 	sll	$t4,$t3,7
 	sll	$t5,$t3,5
 	add	$t5,$t5,$t4
-	
+
 	add	$t4,$t1,$t5
 	sub	$t5,$t2,$t5
 
 	movi	$t7,TOPDOWN_WIDTH
 FadeOutTopDown_BlockLoop:
 
-	_LI	$t6,0x20000	; Check if address t4 or t5 ever writes outside 
-	slt	$at,$t4,$t6	
+	_LI	$t6,0x20000	; Check if address t4 or t5 ever writes outside
+	slt	$at,$t4,$t6
 	_BNEZ	$at,Error	; if so jump to foreverloop error
 	slt	$at,$t5,$t6
 	_BNEZ	$at,Error
@@ -245,7 +245,7 @@ FadeOutTopDown_BlockLoop:
 	addi	$t4,$t4,1
 	addi	$t5,$t5,-1
 	addi	$t7,$t7,-1
-	_BNEZ	$t7,FadeOutTopDown_BlockLoop		
+	_BNEZ	$t7,FadeOutTopDown_BlockLoop
 FadeOutTopDown_OutsideScreen:
 	addi	$t3,$t3,1
 	addi	$t8,$t8,-1
@@ -257,7 +257,7 @@ FadeOutTopDown_OutsideScreen:
 	_JAL	WaitNextFrame
 	addi	$s1,$s1,TOPDOWN_STEP
 	_BNEZ	$s0,FadeOutTopDown_FrameLoop
-		
+
 	POP	$s1
 	POP	$s0
 	POP	$ra
@@ -277,7 +277,7 @@ FadeDown:
 	sll	$t0,$t0,6
 	srl	$t6,$t0,27	; Mask out Blue RIght
 	clr	$v1		; clear /done flag
-	mov	$t7,$a1		
+	mov	$t7,$a1
 	srl	$t8,$t7,27	; Get destination value Red Left
 	sll	$t7,$t7,5
 	slt	$t0,$t8,$t1	; To High ?
@@ -291,7 +291,7 @@ FadeDown:
 	add	$t1,$t1,$t0	; Then Add
 	or	$v1,$v1,$t0	; We are not done
 	srl	$t8,$t7,27	; Get destination value Green Left
-	sll	$t7,$t7,6	
+	sll	$t7,$t7,6
 	slt	$t0,$t8,$t2	; To High ?
 	sub	$t2,$t2,$t0	; Then Sub
 	slt	$t0,$t8,$t2	; To High ?
@@ -349,7 +349,7 @@ FadeDown:
 	slt	$t0,$t6,$t8	; To Low ?
 	add	$t6,$t6,$t0	; Then Add
 	or	$v1,$v1,$t0	; We are not done
-	sll	$v0,$t1,27	; Merge in Red Left	
+	sll	$v0,$t1,27	; Merge in Red Left
 	sll	$t2,$t2,22
 	or	$v0,$v0,$t2	; Merge in Green Left
 	sll	$t3,$t3,16
@@ -370,8 +370,8 @@ FadeSourceToDest:
 	sll	$t0,$t0,6
 	srl	$t6,$t0,27	; Mask out Blue
 	clr	$v1		; clear /done flag
-	
-	mov	$t7,$a1		
+
+	mov	$t7,$a1
 	sll	$t7,$t7,16
 	srl	$t8,$t7,27	; Get destination value Red Left
 	sll	$t7,$t7,5
@@ -381,7 +381,7 @@ FadeSourceToDest:
 	slt	$t0,$t4,$t8	; To Low ?
 	add	$t4,$t4,$t0	; Then Add
 	or	$v1,$v1,$t0	; We are not done
-	
+
 	srl	$t8,$t7,27	; Get destination value Green Right
 	sll	$t7,$t7,6
 	slt	$t0,$t8,$t5	; To High ?
@@ -390,7 +390,7 @@ FadeSourceToDest:
 	slt	$t0,$t5,$t8	; To Low ?
 	add	$t5,$t5,$t0	; Then Add
 	or	$v1,$v1,$t0	; We are not done
-	
+
 	srl	$t8,$t7,27	; Get destination value Blue Right
 	slt	$t0,$t8,$t6	; To High ?
 	sub	$t6,$t6,$t0	; Then Sub
@@ -398,7 +398,7 @@ FadeSourceToDest:
 	slt	$t0,$t6,$t8	; To Low ?
 	add	$t6,$t6,$t0	; Then Add
 	or	$v1,$v1,$t0	; We are not done
-	
+
 	sll	$v0,$t4,11	; Merge in Red Right
 	sll	$t5,$t5,6
 	or	$v0,$v0,$t5	; Merge in Green Right
@@ -409,7 +409,7 @@ SetColor:
 	_LI	$t0,theColor
 	_SW	$a0,0($t0)
 	_RTS
-	
+
 theColor:	.dc	0xffff
 
 Point:
@@ -421,13 +421,13 @@ Point:
 	sll	$t2,$a1,7		; t2 = ypos*128
 	sll	$t3,$a1,5		; t3 = ypos*32
 	add	$t0,$t0,$t1
-	add	$t0,$t0,$t2		
-	add	$t0,$t0,$t3		
-	
+	add	$t0,$t0,$t2
+	add	$t0,$t0,$t3
+
 	lw	$t2,0($t0)		; Get Pixel
 	moviu	$t4,0xffff		; Set Mask
 	sll	$t1,$t7,16		; Shift Color to upper half
-	sll	$t3,$a0,31		
+	sll	$t3,$a0,31
 	slti	$t3,$t3,0		; Is it an odd or even pixel
 	sll	$t3,$t3,4		; Mult by 16
 	srlv	$t1,$t1,$t3		; Set Color in correct half
@@ -437,7 +437,7 @@ Point:
 	nop
 	nop
 	sw	$t2,0($t0)		; Set Pixel
-	
+
 	_RTS
 
 FilledRect:
@@ -463,7 +463,7 @@ FilledRect:
 	add	$t0,$t0,$t1
 	sll	$t1,$a1,5
 	add	$t0,$t0,$t1
-	
+
 	sll	$t1,$a0,31
 	_BEQZ	$t1,FilledRect_LeftEven
 
@@ -480,7 +480,7 @@ FilledRect_LeftOddLoop:
 	addi	$a0,$a0,1
 	addi	$a2,$a2,-1
 	addi	$t0,$t0,1
-	
+
 FilledRect_LeftEven:
 	add	$t1,$a0,$a2
 	sll	$t1,$t1,31
@@ -489,7 +489,7 @@ FilledRect_LeftEven:
 	mov	$t9,$t0
 	srl	$t1,$a2,1
 	add	$t9,$t9,$t1
-	
+
 	mov	$t8,$a3
 FilledRect_RightOddLoop:
 	_LW	$t1,0($t9)
@@ -499,7 +499,7 @@ FilledRect_RightOddLoop:
 	addi	$t9,$t9,160
 	addi	$t8,$t8,-1
 	_BNEZ	$t8,FilledRect_RightOddLoop
-	addi	$a2,$a2,-1	
+	addi	$a2,$a2,-1
 FilledRect_RightEven:
 
 	srl	$t1,$a2,1
@@ -514,9 +514,8 @@ FilledRect_FillColLoop:
 	addi	$t0,$t0,1
 	addi	$t1,$t1,-1
 	_BNEZ	$t1,FilledRect_FillRowLoop
-	
+
 	_RTS
-	
 
 
 
@@ -526,9 +525,10 @@ FilledRect_FillColLoop:
 
 
 
-	
-	
-	
+
+
+
+
 
 
 
@@ -537,14 +537,14 @@ Line:	PUSH	$s0
 	PUSH	$s2
 	PUSH	$s3
 	PUSH	$s4
-	
+
 	movi	$t5,160				; Yinc = t5
-	
+
 	_LI	$t7,theColor
 	lw	$t7,0($t7)
 	nop
 
-	_BGE	$a2,$a0,Line_dont_swap_X	; Make  
+	_BGE	$a2,$a0,Line_dont_swap_X	; Make
 	mov	$t0,$a0				; a0
 	mov	$a0,$a2				; less
 	mov	$a2,$t0				; than
@@ -582,7 +582,7 @@ Line_Big_dX:
 	srl	$t4,$s0,1	;t4 = loop counter = dX/2
 	_BEQZ	$t4,Line_Big_dX_MidPoint
 Line_Big_dX_Loop:
-	srl	$t6,$a0,1	
+	srl	$t6,$a0,1
 	add	$t6,$t6,$t8
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -594,11 +594,11 @@ Line_Big_dX_Loop:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	addi	$a0,$a0,1	
+	addi	$a0,$a0,1
 	add	$s2,$s2,$s3
 	sw	$t0,0($t6)
 
-	srl	$t6,$a2,1	
+	srl	$t6,$a2,1
 	add	$t6,$t6,$t9
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -610,7 +610,7 @@ Line_Big_dX_Loop:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	addi	$a2,$a2,-1	
+	addi	$a2,$a2,-1
 	nop
 	sw	$t0,0($t6)
 
@@ -624,7 +624,7 @@ Line_Big_dX_Next:
 	addi	$t4,$t4,-1
 	_BNEZ	$t4,Line_Big_dX_Loop
 Line_Big_dX_MidPoint:
-	srl	$t6,$a0,1	
+	srl	$t6,$a0,1
 	add	$t6,$t6,$t8
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -636,14 +636,14 @@ Line_Big_dX_MidPoint:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	addi	$a0,$a0,1	
+	addi	$a0,$a0,1
 	add	$s2,$s2,$s3
 	sw	$t0,0($t6)
 
 	andi	$t0,$s0,1
 	_BEQZ	$t0,Line_Done
-	
-	srl	$t6,$a2,1	
+
+	srl	$t6,$a2,1
 	add	$t6,$t6,$t9
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -655,7 +655,7 @@ Line_Big_dX_MidPoint:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	addi	$a2,$a2,-1	
+	addi	$a2,$a2,-1
 	nop
 	sw	$t0,0($t6)
 
@@ -668,7 +668,7 @@ Line_Big_dY:
 	srl	$t4,$s1,1	;t4 = loop counter = dY/2
 	_BEQZ	$t4,Line_Big_dY_MidPoint
 Line_Big_dY_Loop:
-	srl	$t6,$a0,1	
+	srl	$t6,$a0,1
 	add	$t6,$t6,$t8
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -684,7 +684,7 @@ Line_Big_dY_Loop:
 	add	$s2,$s2,$s3
 	sw	$t0,0($t6)
 
-	srl	$t6,$a2,1	
+	srl	$t6,$a2,1
 	add	$t6,$t6,$t9
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -705,12 +705,12 @@ Line_Big_dY_Loop:
 Line_Big_dY_RightUp:
 	add	$s2,$s2,$s4
 	addi	$a0,$a0,1
-	addi	$a2,$a2,-1	
+	addi	$a2,$a2,-1
 Line_Big_dY_Next:
 	addi	$t4,$t4,-1
 	_BNEZ	$t4,Line_Big_dY_Loop
 Line_Big_dY_MidPoint:
-	srl	$t6,$a0,1	
+	srl	$t6,$a0,1
 	add	$t6,$t6,$t8
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -722,14 +722,14 @@ Line_Big_dY_MidPoint:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	nop	
-	nop	
+	nop
+	nop
 	sw	$t0,0($t6)
 
 	andi	$t0,$s1,1
 	_BEQZ	$t0,Line_Done
-	
-	srl	$t6,$a2,1	
+
+	srl	$t6,$a2,1
 	add	$t6,$t6,$t9
 	lw	$t0,0($t6)
 	moviu	$t2,0xffff
@@ -741,14 +741,14 @@ Line_Big_dY_MidPoint:
 	sllv	$t2,$t2,$t3
 	and	$t0,$t0,$t2
 	or	$t0,$t0,$t1
-	nop	
+	nop
 	nop
 	sw	$t0,0($t6)
-	_J	Line_Done	
-	
+	_J	Line_Done
+
 Line_Vertical:
 	srl	$t4,$s1,1	;t4 = loop counter = dY/2
-	srl	$t0,$a0,1	
+	srl	$t0,$a0,1
 	add	$t8,$t8,$t0
 	add	$t9,$t9,$t0
 
@@ -779,11 +779,11 @@ Line_Vertical_Loop:
 
 	add	$t8,$t8,$t5
 	sub	$t9,$t9,$t5
-	
+
 	addi	$t4,$t4,-1
 	_BNEZ	$t4,Line_Vertical_Loop
 
-Line_Vertical_MidPoint:	
+Line_Vertical_MidPoint:
 	lw	$t0,0($t8)
 	nop
 	and	$t0,$t0,$t2
@@ -791,10 +791,10 @@ Line_Vertical_MidPoint:
 	nop
 	nop
 	sw	$t0,0($t8)
-	
+
 	andi	$t0,$s1,1
 	_BEQZ	$t0,Line_Done
-	
+
 	lw	$t0,0($t9)
 	nop
 	and	$t0,$t0,$t2
@@ -802,9 +802,9 @@ Line_Vertical_MidPoint:
 	nop
 	nop
 	sw	$t0,0($t9)
-	
+
 	_J	Line_Done
-	
+
 Line_Horizontal:
 	addi	$s0,$s0,1
 	srl	$t0,$a0,1
@@ -814,7 +814,7 @@ Line_Horizontal:
 
 	andi	$t0,$a0,1
 	_BEQZ	$t0,Line_Horizontal_LeftEven
-	
+
 	lw	$t0,0($t8)
 	moviu	$t2,0xffff
 	sll	$t1,$t7,16
@@ -830,7 +830,7 @@ Line_Horizontal:
 	sw	$t0,0($t8)
 	addi	$t8,$t8,1
 	addi	$s0,$s0,-1
-	
+
 Line_Horizontal_LeftEven:
 	andi	$t0,$a2,1
 	_BNEZ	$t0,Line_Horizontal_RightOdd
@@ -850,11 +850,11 @@ Line_Horizontal_LeftEven:
 	sw	$t0,0($t9)
 	addi	$t9,$t9,-1
 	addi	$s0,$s0,-1
-	
+
 Line_Horizontal_RightOdd:
 	srl	$t4,$s0,1	;t4 = loop counter = dY/2
 	_BEQZ	$t4,Line_Done
-	
+
 	sll	$t1,$t7,16
 	or	$t1,$t1,$t7
 	nop
@@ -864,7 +864,7 @@ Line_Horizontal_Loop:
 	addi	$t8,$t8,1
 	addi	$t4,$t4,-1
 	_BNEZ	$t4,Line_Horizontal_Loop
-Line_Horizontal_MidPoint;	
+Line_Horizontal_MidPoint;
 	_J	Line_Done
 
 Line_Diagonal:
@@ -877,11 +877,11 @@ Line_Done:
 	POP	$s1
 	POP	$s0
 	_RTS
-	
+
 #######################
 # Wait for next frame #
 #######################
-	
+
 WorkScreen:
 	.dc	0
 ViewScreen:
@@ -890,10 +890,10 @@ CurrentScreen:
 	.dc	0
 FrameCount:
 	.dc	0
-	
+
 SWAP_LINE = 280
 
-WaitNextFrame:			
+WaitNextFrame:
 	_LDA	$t0,WorkScreen
 	_LDA	$t1,ViewScreen
 	_STA	$t1,WorkScreen
@@ -903,36 +903,36 @@ WaitNextFrame:
 
 	movi	$t0, 3
 	movi	$t2, SWAP_LINE
-NextFrame_Loop:	
-	mfc1	$t1, $t0	
+NextFrame_Loop:
+	mfc1	$t1, $t0
 	_BNE	$t1, $t2, NextFrame_Loop
 
 	movi	$t0, 3
 	movi	$t2, SWAP_LINE+1
-NextFrame_Loop2:	
-	mfc1	$t1, $t0	
+NextFrame_Loop2:
+	mfc1	$t1, $t0
 	_BNE	$t1, $t2, NextFrame_Loop2
 
 	_LI	$t0, FrameCount
 	_LW	$t1, 0($t0)
 	addi	$t1,$t1,1
 	_SW	$t1, 0($t0)
-						
+
 	_RTS		; Return from subroutine
-	
+
 #######################
 # WaitNextFrameNoSwap #
 #######################
 
-WaitNextFrameNoSwap:	
+WaitNextFrameNoSwap:
 	movi	$t0, 3
 	movi	$t2, 280
-NextFrameNoSwap_Loop:	
-	mfc1	$t1, $t0	
-	_BNE	$t1, $t2, NextFrameNoSwap_Loop	
+NextFrameNoSwap_Loop:
+	mfc1	$t1, $t0
+	_BNE	$t1, $t2, NextFrameNoSwap_Loop
 	movi	$t2, 281
-NextFrameNoSwap_Loop2:	
-	mfc1	$t1, $t0	
+NextFrameNoSwap_Loop2:
+	mfc1	$t1, $t0
 	_BNE	$t1, $t2, NextFrameNoSwap_Loop2
 
 	_LI	$t0, FrameCount
@@ -948,24 +948,24 @@ NextFrameNoSwap_Loop2:
 
 WaitFrames:
 	mov	$t9,$a0
-WaitFrames_Loop:	
+WaitFrames_Loop:
 	movi	$t0, 3
 	movi	$t2, 280
-WaitFrames_InnerLoop:	
-	mfc1	$t1, $t0	
+WaitFrames_InnerLoop:
+	mfc1	$t1, $t0
 	_BNE	$t1, $t2, WaitFrames_InnerLoop
 	movi	$t2, 281
-WaitFrames_InnerLoop2:	
-	mfc1	$t1, $t0	
+WaitFrames_InnerLoop2:
+	mfc1	$t1, $t0
 	_BNE	$t1, $t2, WaitFrames_InnerLoop2
 
 	_LI	$t0, FrameCount
 	_LW	$t1, 0($t0)
 	addi	$t1,$t1,1
 	_SW	$t1, 0($t0)
-		
+
 	addi	$t9,$t9,-1
-	_BNEZ	$t9, WaitFrames_Loop	
+	_BNEZ	$t9, WaitFrames_Loop
 	_RTS
 
 #####################
@@ -984,8 +984,7 @@ GetWorkScreen:
 GetActiveScreen:
 	_LDA	$v0,ViewScreen
 	_RTS
-	
+
 GetFrameCount:
 	_LDA	$v0,FrameCount
 	_RTS
-	

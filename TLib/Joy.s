@@ -1,11 +1,10 @@
-
 ##################
 # Check Joystick #
 ##################
 
 JoyRepeatWait:	.dc	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-JOY_UP 		= 15
+JOY_UP		= 15
 JOY_DOWN	= 13
 JOY_LEFT	= 10
 JOY_RIGHT	= 12
@@ -25,15 +24,15 @@ CheckJoystick:
 	sll	$t0,$t0,24		; Shift to sign bit
 CheckJoyStick_Loop:
 ClearRepeat:
-	_LW	$t4,0($t1)		; Load 
+	_LW	$t4,0($t1)		; Load
 	_LW	$t6,8($t1)		; Load Filter | RepeatVal | Accellerate
-	sll	$t6,$t6,8		
+	sll	$t6,$t6,8
 	srl	$t7,$t6,24		; Filter in $t7
 	sll	$t6,$t6,8
 	srl	$t8,$t6,24		; RepeatVal in $t8
 	sll	$t6,$t6,8
 	srl	$t6,$t6,24		; Accelerate in $t6
-	
+
 	srl	$t5,$t4,16		; Get Repeat Value
 	and	$t4,$t4,$t9		; Get Repeat Count
 	slti	$t3,$t0,0		; Is Joy Bit Set ?
@@ -42,7 +41,7 @@ ClearRepeat:
 	mov	$t5,$t8			; Set repeatvalue
 ClearRepeat_Dont:
 	sub	$t4,$t4,$t3		; Yes, repeatvalue--
-SetRepeatCount:	
+SetRepeatCount:
 	slti	$t3,$t4,0		; Is repeatcount Negative ?
 	sll	$v0,$v0,1		; Shift result
 	or	$v0,$v0,$t3		; Yes, Set Result Bit
@@ -62,12 +61,12 @@ SetRepeatCount_Dont:
 	addi	$t2,$t2,-1		; count--
 	_BNEZ	$t2,CheckJoystick_Loop	; Are we done
 	_RTS
-	
+
 ###########################
 # WaitButton_PressRelease #
 ###########################
 
-WaitButton_PressRelease:	
+WaitButton_PressRelease:
 	PUSH	$ra
 WaitButton_Press:
 	mfc2	$t0
@@ -81,7 +80,7 @@ WaitButton_Release:
 	movi	$t1,0xd2
 	_BNE	$t0,$t1,WaitButton_Release
 	_JAL	WaitNextFrameNoSwap
-	POP	$ra	
+	POP	$ra
 	_RTS
 
 ###############

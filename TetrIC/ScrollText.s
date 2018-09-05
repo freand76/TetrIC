@@ -1,4 +1,3 @@
-
 InitScroll:
 	_STA	$zero,Scroll_Char
 	movi	$t0,8
@@ -7,28 +6,28 @@ InitScroll:
 	_STA	$t0,Scroll_LastChar
 	movi	$t0,-2
 	_STA	$t0,Scroll_Speed
-	
+
 	_RTS
 
 SCROLL_LEFT = 0
 SCROLL_RIGHT = 312
 SCROLL_FADE = 64
 SCROLL_YPOS = 209
-	
+
 Scroll:
 	PUSH	$ra
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
-	
+
 	mov	$s2,$a0
 
 	clr	$v1
 	_LDA	$t0,Scroll_Char
 	_LDA	$t1,Scroll_LastChar
 	_BEQ	$t0,$t1,Scroll_FadeDone
-		
-	_LI	$s0,Scroll_Text	
+
+	_LI	$s0,Scroll_Text
 	_LI	$t0,Scroll_Char
 	_LW	$s1,0($t0)
 	_LI	$t0,Scroll_Slide
@@ -46,9 +45,9 @@ Scroll_PrintLoop:
 	srlv	$a0,$a0,$t1
 	sll	$a0,$a0,24
 	srl	$a0,$a0,24
-	
+
 	moviu	$a3,0xf800
-	
+
 	slti	$t0,$a1,SCROLL_LEFT+SCROLL_FADE
 	_BEQZ	$t0,Scroll_LeftNoFade
 	sll	$a3,$a1,10
@@ -64,14 +63,14 @@ Scroll_Print:
 	_BEQZ	$s2,Scroll_DontEndEarly
 	_LDA	$t2,Scroll_LastChar
 	_BNE	$t2,$s1,Scroll_DontEndEarly
-	movi	$a0,' 
+	movi	$a0,'
 	_JAL	PrintASCII
 	_B	Scroll_Continue
-	
+
 Scroll_DontEndEarly:
 	_JAL	PrintASCII
 	addi	$s1,$s1,1
-	
+
 Scroll_Continue:
 	movi	$t2,Scroll_Length+1
 	_BNE	$s1,$t2,Scroll_NoLoopOver
@@ -88,7 +87,7 @@ Scroll_NoLoopOver:
 	_BEQZ	$t2,Scroll_SlideOn
 	movi	$t3,7
 	and	$t1,$t1,$t3
-Scroll_SlideOn:	
+Scroll_SlideOn:
 	_SW	$t1,0($t0)
 
 	_BEQZ	$s2,Scroll_DontSetLastChar
@@ -115,7 +114,7 @@ Scroll_FadeDone:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	
+
 	_RTS
 
 
@@ -125,7 +124,7 @@ Scroll_Slide:		.dc	0
 Scroll_LastChar:	.dc	0
 Scroll_Speed:		.dc	0
 
-Scroll_Text:	.file	TheText.Txt 512/4
+Scroll_Text:	.file	TheText.txt 512/4
 Scroll_Text_End:
 Scroll_Pad:	.pad	4,0
 Scroll_Length = 4*[Scroll_Text_End-Scroll_Text]

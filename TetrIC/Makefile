@@ -77,7 +77,7 @@ clean:
 
 # How to merge target file
 $(TARGET).s :
-	$(MERGE) $(MACRO) $(STARTUP) $(LCCASM) $(ORIGASM) -o $(TARGET).s
+	cat $(MACRO) $(STARTUP) $(LCCASM) $(ORIGASM) > $(TARGET).s
 
 ###### dependecies, add any dependencies you need here ###################
 $(TARGET).s : $(STARTUP) $(LCCASM) $(ORIGASM)

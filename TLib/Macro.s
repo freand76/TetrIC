@@ -1,14 +1,13 @@
-
 #############
 # M A C R O #
 #############
-	
+
 	; load immidiate 32-bit integer
 	.macro li @reg0,@Imm0
 	lui	@reg0, @Imm0.H
 	ori	@reg0, @reg0, @Imm0.L
 	.endmacro
-	
+
 	; load immidiate 32-bit integer
 	.macro _LI @reg0,@Imm0
 	lui	@reg0, @Imm0.H
@@ -109,7 +108,7 @@
 
 	; safe jump and link
 	.macro _JAL @Imm0
- 	jal	@Imm0
+	jal	@Imm0
 	nop
 	.endmacro
 
@@ -157,7 +156,7 @@
 	lw	@reg0,0($at)
 	nop
 	.endmacro
-	
+
 	; store register to address
 	.macro	_STA @reg0,@Imm0
 	lui	$at, @Imm0.H
@@ -173,7 +172,7 @@
 	lw	@reg0,0($at)
 	nop
 	.endmacro
-	
+
 	; store register to address with offset from register
 	.macro	_STO @reg0,@Imm0,@reg1
 	lui	$at, @Imm0.H
@@ -181,4 +180,3 @@
 	add	$at,$at,@reg1
 	sw	@reg0,0($at)
 	.endmacro
-		

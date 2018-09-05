@@ -1,11 +1,10 @@
-
-Bars:	
+Bars:
 	PUSH	$ra
-	
+
 	_JAL	WaitNextFrame
 	movi	$t0, 1536
 	_SW	$t0, GFX_ROWLENGTH($gfx)
-	movi	$t0, 113	
+	movi	$t0, 113
 	_SW	$t0, GFX_HSYNC($gfx)
 	movi	$t0, 56
 	_SW	$t0, GFX_ESYNC($gfx)
@@ -14,7 +13,7 @@ Bars:
 	movi	$t0, 30
 	_SW	$t0, GFX_TOPPOS($gfx)
 	movi	$t0, 250
-	_SW	$t0, GFX_LEFTPOS($gfx)	
+	_SW	$t0, GFX_LEFTPOS($gfx)
 	movi	$t0, 128		; 8 pixels wide
 	_SW	$t0, GFX_WIDTH($gfx)
 	movi	$t0, 10	; Read data every 15 clk
@@ -38,7 +37,7 @@ BarsLoop:
 	_JAL	ClearBarsScreen
 	_JAL	DrawBars
 	_JAL	CheckJoystick
-	
+
 	mov	$t0,$v0
 	clr	$v0
 	movi	$t1,0xa0	; Left + ButC
@@ -47,10 +46,10 @@ BarsLoop:
 BarsLoop_NoSpecial:
 	andi	$t0,$t0,0xd2
 	_BEQZ	$t0,BarsLoop
-	
+
 	POP	$ra
 	_RTS
-	
+
 ClearBarsScreen:
 	PUSH	$ra
 	_JAL	GetActiveScreen
@@ -74,8 +73,8 @@ ClearBarsScreen_ColLoop:
 	_BNEZ	$t0,ClearBarsScreen_RowLoop
 	POP	$ra
 	_RTS
-	
-	
+
+
 DrawBars:
 	PUSH	$ra
 	PUSH	$s0
@@ -84,9 +83,9 @@ DrawBars:
 	PUSH	$s5
 	PUSH	$s6
 	PUSH	$s7
-	
+
 	_LI	$s0,BarList
-	_LDA	$s1,BarAngle	
+	_LDA	$s1,BarAngle
 	addi	$s1,$s1,BAR_ANGLE_DELTA
 	_STA	$s1,BarAngle
 
@@ -100,9 +99,9 @@ DrawBars_GetZ:
 	addi	$s0,$s0,1
 	addi	$s7,$s7,-1
 	_BNEZ	$s7,DrawBars_GetZ
-	
+
 	lui	$s6,0x7fff
-	movi	$s7,NOF_BARS	
+	movi	$s7,NOF_BARS
 DrawBars_Loop:
 	clr	$t0
 	_LDA	$t1,BarAngle
@@ -135,7 +134,7 @@ DrawBars_NotMiddle:
 	_LDO	$a0,BarList,$s4
 	_STO	$s6,BarZ,$s4
 	_JAL	DrawBar
-	
+
 	addi	$s7,$s7,-1
 	_BNEZ	$s7,DrawBars_Loop
 
@@ -147,7 +146,7 @@ DrawBars_NotMiddle:
 	POP	$s0
 	POP	$ra
 	_RTS
-	
+
 
 DrawBar:
 	PUSH	$ra
@@ -157,7 +156,7 @@ DrawBar:
 	sll	$t1,$t1,6
 	add	$t0,$t0,$t1
 	mov	$t1,$a0
-	
+
 	_LI	$t2,0b00100001000001000010000100000100
 	and	$t2,$t2,$a0
 	_LI	$t3,0b00001000010000010000100001000001
@@ -313,7 +312,7 @@ DrawMiddleBar_Loop:
 	sw	$t2,61($t0)
 	sw	$t2,62($t0)
 	sw	$t2,63($t0)
-	
+
 	add	$t2,$t2,$t3
 	addi	$t0,$t0,64
 	addi	$t1,$t1,2
@@ -330,12 +329,11 @@ NOF_BARS = 7
 BarList:	.dc	0xf800f800,0xffe0ffe0,0x07e007e0
 		.dc	0x07ff07ff,0x001f001f,0xf81ff81f
 		.dc	0x7fff7fff
-		
+
 BarZ:		.pad	NOF_BARS,0
-	
+
 BAR_ANGLE_DELTA = -0x100
 
 ANGLE_BETWEEN_BAR = 0x10000/NOF_BARS
 
 BarAngle:	.dc	0
-

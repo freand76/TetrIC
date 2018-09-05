@@ -9,7 +9,7 @@ ROTATESPEED = 0x180
 
 VEC_COLOR = 0x01e0
 
-Current_Color: 	.dc	0
+Current_Color:	.dc	0
 Target_Color:	.dc	0
 
 Dz = 8
@@ -46,7 +46,7 @@ I_Points_Y:	.dc	-4*Dk,-4*Dk,-4*Dk,-4*Dk,4*Dk,4*Dk,4*Dk,4*Dk
 		.dc	-4*Dk,-4*Dk,-4*Dk,-4*Dk,4*Dk,4*Dk,4*Dk,4*Dk
 
 L_Points_X:	.dc	-Dk,-Dk,Dk,Dk,3*Dk,3*Dk,-Dk,-Dk
-		.dc	-Dk,-Dk,Dk,Dk,3*Dk,3*Dk,-Dk,-Dk		
+		.dc	-Dk,-Dk,Dk,Dk,3*Dk,3*Dk,-Dk,-Dk
 L_Points_Y:	.dc	-3*Dk,-3*Dk,-3*Dk,Dk,Dk,3*Dk,3*Dk,3*Dk
 		.dc	-3*Dk,-3*Dk,-3*Dk,Dk,Dk,3*Dk,3*Dk,3*Dk
 
@@ -54,7 +54,7 @@ J_Points_X:	.dc	-Dk,Dk,Dk,Dk,Dk,-3*Dk,-3*Dk,-Dk
 		.dc	-Dk,Dk,Dk,Dk,Dk,-3*Dk,-3*Dk,-Dk
 J_Points_Y:	.dc	-3*Dk,-3*Dk,-3*Dk,3*Dk,3*Dk,3*Dk,Dk,Dk
 		.dc	-3*Dk,-3*Dk,-3*Dk,3*Dk,3*Dk,3*Dk,Dk,Dk
-		
+
 S_Points_X:	.dc	-2*Dk,0,0,2*Dk,2*Dk,0,0,-2*Dk
 		.dc	-2*Dk,0,0,2*Dk,2*Dk,0,0,-2*Dk
 S_Points_Y:	.dc	-3*Dk,-3*Dk,-Dk,-Dk,3*Dk,3*Dk,Dk,Dk
@@ -64,12 +64,12 @@ Z_Points_X:	.dc	-2*Dk,0,0,2*Dk,2*Dk,0,0,-2*Dk
 		.dc	-2*Dk,0,0,2*Dk,2*Dk,0,0,-2*Dk
 Z_Points_Y:	.dc	-Dk,-Dk,-3*Dk,-3*Dk,Dk,Dk,3*Dk,3*Dk
 		.dc	-Dk,-Dk,-3*Dk,-3*Dk,Dk,Dk,3*Dk,3*Dk
-		
+
 T_Points_X:	.dc	-Dk,-Dk,Dk,Dk,3*Dk,3*Dk,-3*Dk,-3*Dk
 		.dc	-Dk,-Dk,Dk,Dk,3*Dk,3*Dk,-3*Dk,-3*Dk
 T_Points_Y:	.dc	-Dk,-3*Dk,-3*Dk,-Dk,-Dk,Dk,Dk,-Dk
 		.dc	-Dk,-3*Dk,-3*Dk,-Dk,-Dk,Dk,Dk,-Dk
-		
+
 Points_Z:	.dc	Dz,Dz,Dz,Dz,Dz,Dz,Dz,Dz
 		.dc	-Dz,-Dz,-Dz,-Dz,-Dz,-Dz,-Dz,-Dz
 
@@ -78,7 +78,7 @@ Vec_Points_X:	.pad	VEC_POINTS,0
 Vec_Points_Y:	.pad	VEC_POINTS,0
 Vec_Points_Z:	.pad	VEC_POINTS,0
 
-Vec_Surface_List:	.dc	Vec_Surface1 
+Vec_Surface_List:	.dc	Vec_Surface1
 			.dc	Vec_Surface2
 			.dc	Vec_Surface3
 			.dc	Vec_Surface4
@@ -131,7 +131,7 @@ Rotate:	PUSH	$ra
 	PUSH	$s5	; Z Point
 	PUSH	$s6	; Acc1
 	PUSH	$s7	; Acc2
-	
+
 	clr	$s0
 Rotate_Point_Loop:
 	; Get original positions
@@ -141,19 +141,19 @@ Rotate_Point_Loop:
 	nop
 	lw	$s5,Vec_Points_Z($s0)
 	nop
-	
+
 	; Get Cos and Sin for Z-angle
 	lw	$a0,Angle_Z($zero)
 	nop
 	_JAL	Sin
-	mov	$s1,$v0			
+	mov	$s1,$v0
 	lw	$a0,Angle_Z($zero)
 	nop
 	_JAL	Cos
 	mov	$s2,$v0
 	; Rotate around Z-axis ( Z-pos unaffected )
 	mov	$a0,$s2	; X_Rot = Cos(xphi) * X_Pos - Sin(xphi) * Y_Pos
-	mov	$a1,$s3	
+	mov	$a1,$s3
 	_JAL	Muls16fpfast
 	mov	$s6,$v0
 	mov	$a0,$s1
@@ -161,7 +161,7 @@ Rotate_Point_Loop:
 	_JAL	Muls16fpfast
 	sub	$s6,$s6,$v0
 	mov	$a0,$s1	; Y_Rot = Sin(xphi) * X_Pos + Cos(xphi) * Y_Pos
-	mov	$a1,$s3	
+	mov	$a1,$s3
 	_JAL	Muls16fpfast
 	mov	$s7,$v0
 	mov	$a0,$s2
@@ -169,19 +169,19 @@ Rotate_Point_Loop:
 	_JAL	Muls16fpfast
 	add	$s4,$s7,$v0	; New Ypos after Z-rotate to s4
 	mov	$s3,$s6		; New Xpos after Z-rotate to s3
-	
+
 	; Get Cos and Sin for Y-angle
 	lw	$a0,Angle_Y($zero)
 	nop
 	_JAL	Sin
-	mov	$s1,$v0			
+	mov	$s1,$v0
 	lw	$a0,Angle_Y($zero)
 	nop
 	_JAL	Cos
 	mov	$s2,$v0
 	; Rotate around Y-axis ( Y-pos unaffected )
 	mov	$a0,$s2	; X_Rot = Cos(yphi) * X_Pos - Sin(yphi) * Z_Pos
-	mov	$a1,$s3	
+	mov	$a1,$s3
 	_JAL	Muls16fpfast
 	mov	$s6,$v0
 	mov	$a0,$s1
@@ -189,7 +189,7 @@ Rotate_Point_Loop:
 	_JAL	Muls16fpfast
 	sub	$s6,$s6,$v0
 	mov	$a0,$s1	; Z_Rot = Sin(yphi) * X_Pos + Cos(yphi) * Z_Pos
-	mov	$a1,$s3	
+	mov	$a1,$s3
 	_JAL	Muls16fpfast
 	mov	$s7,$v0
 	mov	$a0,$s2
@@ -202,14 +202,14 @@ Rotate_Point_Loop:
 	lw	$a0,Angle_X($zero)
 	nop
 	_JAL	Sin
-	mov	$s1,$v0			
+	mov	$s1,$v0
 	lw	$a0,Angle_X($zero)
 	nop
 	_JAL	Cos
 	mov	$s2,$v0
 	; Rotate around X-axis ( X-pos unaffected )
 	mov	$a0,$s2	; Y_Rot = Cos(yphi) * Y_Pos - Sin(yphi) * Z_Pos
-	mov	$a1,$s4	
+	mov	$a1,$s4
 	_JAL	Muls16fpfast
 	mov	$s6,$v0
 	mov	$a0,$s1
@@ -217,7 +217,7 @@ Rotate_Point_Loop:
 	_JAL	Muls16fpfast
 	sub	$s6,$s6,$v0
 	mov	$a0,$s1	; Z_Rot = Sin(yphi) * Y_Pos + Cos(yphi) * Z_Pos
-	mov	$a1,$s4	
+	mov	$a1,$s4
 	_JAL	Muls16fpfast
 	mov	$s7,$v0
 	mov	$a0,$s2
@@ -227,7 +227,7 @@ Rotate_Point_Loop:
 	mov	$s4,$s6		; New Xpos after Y-rotate to s3
 
 	sra	$s5,$s5,16
-	
+
 	; Perspective
 	sra	$a0,$s3,8	; Perspective on X-cord
 	addi	$a1,$s5,256
@@ -236,7 +236,7 @@ Rotate_Point_Loop:
 	nop
 	nop
 	sw	$s3,Rot_Points_X($s0)
-	
+
 	sra	$a0,$s4,8	; Perspective on Y-cord
 	addi	$a1,$s5,256
 	_JAL	Divs16
@@ -244,11 +244,11 @@ Rotate_Point_Loop:
 	nop
 	nop
 	sw	$s4,Rot_Points_Y($s0)
-		
+
 	addi	$s0,$s0,1
 	movi	$t9,VEC_POINTS
 	_BNE	$s0,$t9,Rotate_Point_Loop
-	
+
 	POP	$s7
 	POP	$s6
 	POP	$s5
@@ -259,19 +259,19 @@ Rotate_Point_Loop:
 	POP	$s0
 	POP	$ra
 	_RTS
-	
+
 Draw:	PUSH	$ra
 	PUSH	$s0	; cord 0
 	PUSH	$s1	; cord 1
 	PUSH	$s2	; cord 2
 	PUSH	$s3	;  temp
-	
+
 	PUSH	$s6	; Surface counter
 	PUSH	$s7	; Surface pointer
-	
+
 	clr	$s6
 	clr	$s3	; temp
-		
+
 	li	$t0,LineDrawnTable
 	movi	$t1,VEC_POINTS
 Draw_ClearLineDrawnTable:
@@ -279,20 +279,20 @@ Draw_ClearLineDrawnTable:
 	addi	$t0,$t0,1
 	addi	$t1,$t1,-1
 	_BNEZ	$t1,Draw_ClearLineDrawnTable
-	
+
 Draw_Surface_Loop:
 	lw	$s7,Vec_Surface_List($s6)
 	nop
 	lw	$s0,0($s7)
 	nop
-	lw	$s1,1($s7)	
+	lw	$s1,1($s7)
 	nop
-	lw	$s2,2($s7)	
+	lw	$s2,2($s7)
 	nop
-	
+
 Draw_Line_Loop:
 	mov	$t0,$s0
-	mov	$t1,$s1	
+	mov	$t1,$s1
 	slt	$t2,$t0,$t1
 	_BEQZ	$t2,Draw_NoSwitch
 	mov	$t0,$s1
@@ -308,14 +308,14 @@ Draw_NoSwitch:
 	nop
 	nop
 	sw	$t2,LineDrawnTable($t0)
-	
+
 	_LW	$a0,Rot_Points_X($s0)
 	_LW	$a1,Rot_Points_Y($s0)
 	_LW	$a2,Rot_Points_X($s1)
 	_LW	$a3,Rot_Points_Y($s1)
 	_JAL	Line
 	addi	$s3,$s3,1
-		
+
 Draw_LineAlreadyDrawn:
 	addi	$s7,$s7,1
 	mov	$s0,$s1
@@ -327,7 +327,7 @@ Draw_LineAlreadyDrawn:
 	addi	$s6,$s6,1
 	movi	$t1,VEC_SURFACE_COUNT
 	_BNE	$s6,$t1,Draw_Surface_Loop
-		
+
 	POP	$s7
 	POP	$s6
 	POP	$s3
@@ -335,21 +335,21 @@ Draw_LineAlreadyDrawn:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	_RTS	
-	
+	_RTS
+
 SetupMorph:
 	PUSH	$ra
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
-		
+
 	clr	$s0
-	
+
 	li	$t1,Morph_Points
 	li	$t2,Vector_Points
 	li	$t3,Morph_Delta
 	movi	$t9,3
-SetupMorph_Loop:	
+SetupMorph_Loop:
 	lw	$t0,0($a0)
 	movi	$t8,VEC_POINTS
 SetupMorph_InnerLoop:
@@ -392,13 +392,13 @@ SetupMorph_Normalize_Loop:
 	addi	$s2,$s2,1
 	addi	$s1,$s1,-1
 	_BNEZ	$s1,SetupMorph_Normalize_Loop
-		
+
 	POP	$s2
 	POP	$s1
 	POP	$s0
 	POP	$ra
 	movi	$v0,7
-	
+
 	_RTS
 
 MorphPoints:
@@ -415,7 +415,7 @@ MorphPoints_Loop:
 	lw	$t5,0($t2)
 	nop
 	add	$t3,$t3,$t5
-	
+
 	sra	$t6,$t3,16
 	sra	$t4,$t4,16
 	_BNE	$t4,$t6,MorphPoints_NotDone
@@ -430,7 +430,7 @@ MorphPoints_NotDone:
 	addi	$t2,$t2,1
 	_BNEZ	$t9,MorphPoints_Loop
 	_RTS
-	
+
 SimpleMorphPoints:
 	clr	$v0
 	li	$t1,Vector_points
@@ -443,7 +443,7 @@ SimpleMorphPoints_Inner_Loop:
 	addi	$t0,$t0,1
 	lw	$t3,0($t1)
 	addi	$t8,$t8,-1
-	
+
 	slt	$t4,$t3,$t2
 	add	$t3,$t3,$t4
 	or	$v0,$v0,$t4
@@ -479,7 +479,7 @@ CopyPoints_Inner_Loop:
 	addi	$t9,$t9,-1
 	_BNEZ	$t9,CopyPoints_Loop
 	_RTS
-	
+
 MorphFrame:
 	PUSH	$ra
 	PUSH	$s0
@@ -490,12 +490,12 @@ MorphFrame:
 MorphFrame_DontChangeTarget:
 	_JAL	MorphPoints
 	_JAL	MorphPoints
-	
+
 	_LI	$t0,Angle_Y
 	_LW	$t1,0($t0)
 	addi	$t1,$t1,ROTATESPEED
 	_SW	$t1,0($t0)
-	
+
 	_LI	$s0,Vec_FrameCount
 	_LW	$s1,0($s0)
 	addi	$s1,$s1,-1
@@ -522,20 +522,20 @@ MorphFrame_DontFade:
 	POP	$s0
 	POP	$ra
 	_RTS
-		
+
 StartMorph:
 	PUSH	$ra
-	
+
 	_LI	$t0,Angle_X
 	movi	$t1,0x1234
 	_SW	$t1,0($t0)
 	_SW	$zero,1($t0)
 	_SW	$zero,2($t0)
-	
+
 	_STA	$zero,Current_Color
 	moviu	$t0,VEC_COLOR
 	_STA	$t0,Target_Color
-	
+
 	movi	$t1,FRAMESBEFOREMORPH
 	_STA	$t1,Vec_FrameCount
 
@@ -546,16 +546,16 @@ StartMorph_Loop:
 	addi	$t0,$t0,1
 	addi	$t1,$t1,-1
 	_BNEZ	$t1,StartMorph_Loop
-	
+
 	_LDA	$a0,Object_List
 	_JAL	SetupMorph
 
 	POP	$ra
 	_RTS
-	
+
 MorphNext:
 	PUSH	$ra
-	
+
 	_LDA	$t0,Current_ObjectNbr
 	addi	$t0,$t0,1
 	movi	$t1,NOFOBJECTS
@@ -564,8 +564,8 @@ MorphNext:
 MorphNext_NoOverflow:
 	_STA	$t0,Current_ObjectNbr
 
-	_LDO	$a0,Object_List,$t0	
+	_LDO	$a0,Object_List,$t0
 	_JAL	SetupMorph
-	
+
 	POP	$ra
 	_RTS

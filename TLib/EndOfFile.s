@@ -1,8 +1,5 @@
-
 #######
 # EOF #
 #######
 
 EndOfFile:	.ascii	"SLUT"
-
-

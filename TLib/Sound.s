@@ -1,11 +1,11 @@
 ###################
 # Sound Registers #
 ###################
-	
-SFX_OFFSET 	= 0
-SFX_LUT 	= 1
+
+SFX_OFFSET	= 0
+SFX_LUT		= 1
 SFX_CHANSTATUS	= 2
-SFX_SONGSTATUS 	= 3
+SFX_SONGSTATUS	= 3
 SFX_FX0_START	= 4
 SFX_FX1_START	= 5
 SFX_FX2_START	= 6
@@ -91,5 +91,4 @@ InitSound:
 # Music #
 #########
 
-Lut:		.file	../TLib/Data/Lut.raw	800	
-
+Lut:		.file	../TLib/Data/Lut.raw	800

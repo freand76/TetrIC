@@ -1,4 +1,3 @@
-
 INTROMODE = 0
 GAMEMODE = 1
 ENTERHIGHSCOREMODE = 2
@@ -7,22 +6,22 @@ VIEWHIGHSCOREMODE = 3
 Mode:		.dc	0
 
 ModeJumpTable:	.dc	ModeSwitchIntro,ModeSwitchGame,ModeSwitchEnterHigh,ModeSwitchViewHighScore
-	
+
 
 PreMain:
 	movi	$t0,INTROMODE
 	_STA	$t0,Mode
-	
+
 Main:	_JAL	Randomize
 	_LDA	$t0,Mode
 	_LDO	$t0,ModeJumpTable,$t0
 	_JALR	$t0,$ra
 	_J	Main
-	
+
 ModeSwitchIntro:
 	PUSH	$ra
 	_JAL	StartIntro
-	_JAL	GetNextMode	
+	_JAL	GetNextMode
 	_STA	$v0,Mode		; will we go to gamemode or view highscoremode ?
 	POP	$ra
 	_RTS
@@ -42,7 +41,7 @@ ModeSwitchEnterHigh:
 	_STA	$t0,Mode
 	POP	$ra
 	_RTS
-	
+
 ModeSwitchViewHighScore:
 	PUSH	$ra
 	_JAL	StartViewHigh

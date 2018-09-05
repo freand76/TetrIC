@@ -12,7 +12,7 @@ StartMusic:
 	; ModuleIndex
 	movi	$t0,0
 	_SW	$t0,SFX_SONGSTATUS($sfx)	; stop current song
-	
+
 	_LI	$t0,SilentMod
 	_BEQZ	$a0,StartMusic_Silent
 
@@ -22,12 +22,12 @@ StartMusic:
 	_LI	$t0,TetricMod			; game music
 StartMusic_Silent:
 	_SW	$t0,SFX_OFFSET($sfx)		; offset to song
-	
+
 	movi	$t0,SONG_LOOP|SONG_PLAY
 	_SW	$t0,SFX_SONGSTATUS($sfx)	; start playing (even if silent)
-	
+
 	_RTS
-	
+
 FX_MENU_CHANGEROW = 0
 FX_MENU_CHANGEVALUE = 1
 FX_MENU_BUTTON = 2
@@ -76,7 +76,7 @@ EnableMusic_Off:
 PlaySampleCh1:
 	; play a sample 11.025kHz
 	; a0 - sample index
-	
+
 	_LDA	$t0,FX_State
 	_BEQZ	$t0,PlaySample_NoFX
 
@@ -102,7 +102,7 @@ PlaySampleCh1:
 	sw	$t6,SFX_FX0_VOL($sfx)
 	sw	$t6,SFX_FX1_VOL($sfx)
 	_RTS
-		
+
 PlaySampleCh2:
 	; play a sample 11.025kHz
 	; a0 - sample index
@@ -140,10 +140,10 @@ PlayBeat:
 	PUSH	$ra
 	_LDA	$t0,BeatTargetVolume
 	_BNEZ	$t0,PlayBeat_NoBeat		; already playing
-	
+
 	movi	$a0,0				; silent during intro
 	_JAL	StartMusic
-	
+
 
 	_LI	$t0,Beat
 	_LW	$t1,0($t0)
@@ -166,7 +166,7 @@ PlayBeat:
 	sw	$zero,SFX_FX2_VOL($sfx)
 	sw	$zero,SFX_FX3_VOL($sfx)
 	_STA	$zero,BeatVolume
-		
+
 	clr	$t0
 	_LDA	$t1,Music_State
 	_BEQZ	$t1,PlayBeat_Silent
@@ -182,7 +182,7 @@ FadeBeat:
 	_JAL	GetFrameCount
 	sll	$t0,$v0,30
 	_BNEZ	$t0,FadeBeat_DontFade
-	
+
 	_LDA	$t0,BeatVolume
 	_LDA	$t1,BeatTargetVolume
 	slt	$t2,$t0,$t1
@@ -206,7 +206,7 @@ StopAllSamples:
 	sw	$zero,SFX_FX2_END($sfx)
 	sw	$zero,SFX_FX3_END($sfx)
 	_RTS
-		
+
 StopSample:
 	; a0 - channel (0  or 1)
 	_BNEZ	$a0,StopSample_ChannelTwo
@@ -223,7 +223,7 @@ Beat:
 	.dc	Beat_Data
 	.dc	Beat_End
 	.dc	Beat_Data
-	.dc	Beat_End	
+	.dc	Beat_End
 Beat_Data:	.file	Data/snd_beat.raw 8590
 Beat_End:
 
@@ -233,7 +233,7 @@ MenuChangeRow:
 	.dc	0
 	.dc	0
 	.dc	16
-	
+
 MenuChangeRow_Data:	.file	Data/snd_menu_changerow.raw 227
 MenuChangeRow_End:
 
@@ -243,7 +243,7 @@ MenuChangeValue:
 	.dc	0
 	.dc	0
 	.dc	32
-	
+
 MenuChangeValue_Data:	.file	Data/snd_menu_changevalue.raw 166
 MenuChangeValue_End:
 
@@ -253,7 +253,7 @@ MenuButton:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 MenuButton_Data:	.file	Data/snd_menu_button.raw 373
 MenuButton_End:
 
@@ -263,7 +263,7 @@ EnterHighButton:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 EnterHighButton_Data:	.file	Data/snd_enterhigh_button.raw 161
 EnterHighButton_End:
 
@@ -273,7 +273,7 @@ GameChangeLevel:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 GameChangeLevel_Data:	.file	Data/snd_game_changelevel.raw 1193
 GameChangeLevel_End:
 
@@ -283,7 +283,7 @@ GameDrop:
 	.dc	0
 	.dc	0
 	.dc	20
-	
+
 GameDrop_Data:		.file	Data/snd_game_drop.raw 1346
 GameDrop_End:
 
@@ -293,7 +293,7 @@ GameQuad:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 GameQuad_Data:		.file	Data/snd_game_quad.raw 6292
 GameQuad_End:
 
@@ -303,7 +303,7 @@ GameRotate:
 	.dc	0
 	.dc	0
 	.dc	40
-	
+
 GameRotate_Data:	.file	Data/snd_game_rotate.raw 589
 GameRotate_End:
 
@@ -313,7 +313,7 @@ GameRow:
 	.dc	0
 	.dc	0
 	.dc	48
-	
+
 GameRow_Data:		.file	Data/snd_game_row.raw 2304
 GameRow_End:
 
@@ -323,7 +323,7 @@ GameWarning:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 GameWarning_Data:	.file	Data/snd_game_warning.raw 2424
 GameWarning_End:
 
@@ -333,7 +333,7 @@ GameOverLaugh:
 	.dc	0
 	.dc	0
 	.dc	64
-	
+
 GameOverLaugh_Data:	.file	Data/snd_gameover_laugh.raw 11025
 GameOverLaugh_End:
 

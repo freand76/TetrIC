@@ -5,19 +5,19 @@
 StartGame:
 	PUSH	$ra
 	_JAL	StopAllSamples
-	
+
 	movi	$a0,1				; game music or no music
 	_JAL	StartMusic
 
-	
+
 	_JAL	GetStartLevel
-	_LI	$t0,Level			
+	_LI	$t0,Level
 	_SW	$v0,0($t0)			; Store to Level
-	
+
 	_JAL	GetShowNextPiece
 	_LI	$t0,ShowNextPiece
-	_SW	$v0,0($t0)			; Store to ShowNextPiece	
-	
+	_SW	$v0,0($t0)			; Store to ShowNextPiece
+
 	_JAL	GetStartHeight
 	mov	$a0,$v0				; Get StartHeight
 	_JAL	InitBoard			; Init Board
@@ -27,7 +27,7 @@ StartGame:
 	_LI	$t1,0x000800	; Filter = 00, RepeatVal = 08, Accelerate = 0
 	; DOWN
 	_LI	$t2,0x05ff00	; Filter = 05, RepeatVal = ff, Accelerate = 0
-	nop	
+	nop
 	sw	$t1,JOY_UP($t0)
 	sw	$t1,JOY_LEFT($t0)
 	sw	$t1,JOY_RIGHT($t0)
@@ -36,31 +36,31 @@ StartGame:
 	sw	$t1,JOY_BUTC($t0)
 	sw	$t1,JOY_START($t0)
 	sw	$t2,JOY_DOWN($t0)
-	
+
 	_JAL	DrawGameBackground		; Draw background
-	
-	_LI	$t0,Score	
+
+	_LI	$t0,Score
 	_SW	$zero,0($t0)			; Clear Score
 	_LI	$t0,LineCount
 	_SW	$zero,0($t0)			; Clear number of lines
 	_LI	$t0,GameOver
-	_SW	$zero,0($t0)	
-		
+	_SW	$zero,0($t0)
+
 	movi	$a0,20				; Draw 20 Rows
 	movi	$a1,0				; DeltaY = 0
 	_JAL	DrawBoard			; Draw Playfield
-	_JAL	GetRandomPiece			; Get First Piece	
-	
-	_LI	$t0,Stat			
-	sw	$zero,0($t0)			; Clear Stat 
+	_JAL	GetRandomPiece			; Get First Piece
+
+	_LI	$t0,Stat
+	sw	$zero,0($t0)			; Clear Stat
 	sw	$zero,1($t0)			; Clear Stat
 	sw	$zero,2($t0)			; Clear Stat
 	sw	$zero,3($t0)			; Clear Stat
 	sw	$zero,4($t0)			; Clear Stat
 	sw	$zero,5($t0)			; Clear Stat
 	sw	$zero,6($t0)			; Clear Stat
-	
-	_JAL	GetRandomPiece			; Get Next Piece	
+
+	_JAL	GetRandomPiece			; Get Next Piece
 	_JAL	DrawCurrentPiece		; Draw Current Piece
 	_JAL	DrawNextPiece			; Draw Current Piece
 
@@ -73,15 +73,15 @@ StartGame_Loop:
 
 	_JAL	WaitGameNextFrame		; Wait for next frame
 	_JAL	DrawBoard			; Draw Board
-	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y 
-	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on 
+	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y
+	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on
 	_JAL	DrawStat			; Draw Statistics
 	_JAL	DrawScore			; Print Score, Lines, Level
 
 	_JAL	WaitGameNextFrame		; Wait for next frame
 	_JAL	DrawBoard			; Draw Board
-	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y 
-	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on 
+	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y
+	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on
 	_JAL	DrawStat			; Draw Statistics
 	_JAL	DrawScore			; Print Score, Lines, Level
 
@@ -98,20 +98,20 @@ StartGame_Loop:
 
 	_JAL	PrintGameOver			; Print GameOver and wait for button
 	_JAL	ScreenFadeOut			; Fadeout screen
-	
-	POP	$ra				
-	_RTS	
-	
+
+	POP	$ra
+	_RTS
+
 
 GameOver_Txt:	.ascii	"G A M E  O V E R";
 
 GAMEOVER_X = 160-128
 GAMEOVER_Y = 120
-	
+
 PrintGameOver:
 	PUSH	$ra
 	PUSH	$s0
-	
+
 	_LI	$a0,GameOver_Txt
 	movi	$a1,GAMEOVER_X
 	movi	$a2,GAMEOVER_Y
@@ -130,7 +130,7 @@ PrintGameOver_InnerLoop:
 	_BNEZ	$s0,PrintGameOver_InnerLoop
 	_JAL	WaitNextFrame
 	_J	PrintGameOver_Loop
-	
+
 PrintGameOver_Done:
 	POP	$s0
 	POP	$ra
@@ -145,12 +145,12 @@ TetrisFrame:
 	movi	$a0,20				; Draw 20 Rows
 	movi	$a1,0				; DeltaY = 0
 	_JAL	DrawBoard			; Draw Board
-	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y 
-	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on 
+	_JAL	DrawCurrentPiece		; Draw Piece at new X,Y
+	_JAL	DrawNextPiece			; Draw NextPiece if cheat mode on
 	_JAL	DrawStat			; Draw Statistics
 	_JAL	DrawScore			; Print Score, Lines, Level
 	_JAL	CheckWarning			; If high play warning
-	_JAL	GameJoystick			; Read JoyStick	
+	_JAL	GameJoystick			; Read JoyStick
 	_LI	$t0,GameOver
 	_LW	$v0,0($t0)
 	POP	$ra
@@ -158,13 +158,13 @@ TetrisFrame:
 
 WaitGameNextFrame:
 	PUSH	$ra
-	
+
 	_JAL	WaitNextFrame
 	_JAL	ShakeBoard
- 
+
 	POP	$ra
 	_RTS
-	
+
 GameJoystick:
 	PUSH	$ra				; Store to stack
 	PUSH	$s0
@@ -176,7 +176,7 @@ GameJoystick:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
 	_BEQZ	$t0,noGameUp			; Check LSB
-	_JAL 	SoftDrop			; Move Down
+	_JAL	SoftDrop			; Move Down
 noGameUp:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
@@ -191,7 +191,7 @@ noGameDown:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
 	_BEQZ	$t0,noGameRight			; Check LSB
-	_JAL 	MoveRight			; MoveRight 
+	_JAL	MoveRight			; MoveRight
 noGameRight:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
@@ -201,7 +201,7 @@ noGameButB:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
 	_BEQZ	$t0,noGameLeft			; Check LSB
-	_JAL 	MoveLeft			; MoveLeft
+	_JAL	MoveLeft			; MoveLeft
 noGameLeft:
 	andi	$t0,$s0,1			; LSB to t0
 	srl	$s0,$s0,1			; Shift out LSB
@@ -217,7 +217,7 @@ noGameButC:
 	POP	$a1
 	POP	$a0
 	POP	$s0				; Get from stack
-	POP	$ra	
+	POP	$ra
 	_RTS				; Return from subroutine
 
 ###################
@@ -238,7 +238,7 @@ CheckWarning:
 	movi	$t9,8			; Check the top 5 rows
 CheckWarning_RowLoop:
 	movi	$t8,10
-CheckWarning_ColLoop:	
+CheckWarning_ColLoop:
 	_LW	$t2,0($t1)
 	_BEQZ	$t2,CheckWarning_NotSet
 	addi	$t0,$t0,1
@@ -246,18 +246,18 @@ CheckWarning_NotSet:
 	addi	$t1,$t1,1
 	addi	$t8,$t8,-1
 	_BNEZ	$t8,CheckWarning_ColLoop
-	addi	$t1,$t1,2	
+	addi	$t1,$t1,2
 	addi	$t9,$t9,-1
 	_BNEZ	$t9,CheckWarning_RowLoop
 
 	slti	$t1,$t0,10
 
-	_BNEZ	$t1,CheckWarning_NoWarning	
+	_BNEZ	$t1,CheckWarning_NoWarning
 
 	_LDA	$t0,WarningCount
 	movi	$t1,WARNING_TIME
 	_BNE	$t0,$t1,CheckWarning_NoSound
-	
+
 	movi	$a0,FX_GAME_WARNING
 	_JAL	PlaySampleCh2
 
@@ -266,14 +266,14 @@ CheckWarning_NoSound:
 	addi	$t0,$t0,-1
 	_STA	$t0,WarningCount
 	_BNEZ	$t0,CheckWarning_Exit
-CheckWarning_NoWarning:	
+CheckWarning_NoWarning:
 	movi	$t0,WARNING_TIME
 	_STA	$t0,WarningCount
 CheckWarning_Exit:
 	POP	$ra
 	_RTS
-	
-	
+
+
 ###################
 # TetrIC Game Gfx #
 ###################
@@ -318,13 +318,13 @@ DrawGameBackground:
 	_JAL	ExpandStatBkg
 	_LI	$a1,ScoreBKG
 	_JAL	ExpandScoreBkg
-	
+
 	POP	$a2
 	POP	$a1
 	POP	$a0
 	POP	$ra
 	_RTS
-		
+
 ExpandPalette:
 	; Expands a 256*16 bits (512 byte) palette to 256*32 bits (Zero in high 16 bits)
 	mov	$t0,$a0		; Packed palette pointer
@@ -372,7 +372,7 @@ ExpandPic_ByteLoop:
 	addi	$t3,$t3,-1	; wordcount--
 	_BNEZ	$t3,ExpandPic_RowLoop
 	_RTS
-	
+
 ShadePalette:
 	; Shades the 256 color palette to half the value for each color
 	mov	$t0,$a0			; Palette pointer
@@ -412,7 +412,7 @@ GreyPal_Loop:
 	addi	$t1,$t1,-1		; Color--
 	_BNEZ	$t1,GreyPal_Loop	; Are we done ?
 	_RTS
-	
+
 ExpandBoardBkg:
 	; Fix Board Background from 8 bit palette colorto 16 bit color
 	PUSH	$s0	; Row counter
@@ -430,7 +430,7 @@ ExpandBoardBkg:
 	sll	$t4,$t3,6	; * 64
 	add	$t0,$t0,$t4     ; = * 80 (80 words / row)
 	movi	$s0,160		; Row counter
-Copy_To_BoardBKG_Loop	
+Copy_To_BoardBKG_Loop
 	movi	$s1,20		; Col Counter
 Copy_To_BoardBKG_RowLoop
 	_LW	$t3,0($t0)	; Get word
@@ -456,10 +456,10 @@ Copy_To_BoardBKG_ByteLoop:
 	addi	$t0,$t0,60	; Add rest of row
 	addi	$s0,$s0,-1	; Row --
 	_BNEZ	$s0,Copy_To_BoardBKG_Loop
- 	POP	$s2
- 	POP	$s1
- 	POP	$s0
- 	_RTS
+	POP	$s2
+	POP	$s1
+	POP	$s0
+	_RTS
 
 ExpandNextPieceBkg:
 	; Fix Board Background from 8 bit palette colorto 16 bit color
@@ -478,7 +478,7 @@ ExpandNextPieceBkg:
 	sll	$t4,$t3,6	; * 64
 	add	$t0,$t0,$t4     ; = * 80 (80 words / row)
 	movi	$s0,48		; Row counter
-Copy_To_NPBKG_Loop	
+Copy_To_NPBKG_Loop
 	movi	$s1,23		; Col Counter
 Copy_To_NPBKG_RowLoop
 	_LW	$t3,0($t0)	; Get word
@@ -504,10 +504,10 @@ Copy_To_NPBKG_ByteLoop:
 	addi	$t0,$t0,57	; Add rest of row
 	addi	$s0,$s0,-1	; Row --
 	_BNEZ	$s0,Copy_To_NPBKG_Loop
- 	POP	$s2
- 	POP	$s1
- 	POP	$s0
- 	_RTS
+	POP	$s2
+	POP	$s1
+	POP	$s0
+	_RTS
 
 ExpandStatBkg:
 	; Fix Board Background from 8 bit palette colorto 16 bit color
@@ -526,7 +526,7 @@ ExpandStatBkg:
 	sll	$t4,$t3,6	; * 64
 	add	$t0,$t0,$t4     ; = * 80 (80 words / row)
 	movi	$s0,48		; Row counter
-Copy_To_StatBKG_Loop	
+Copy_To_StatBKG_Loop
 	movi	$s1,23		; Col Counter
 Copy_To_StatBKG_RowLoop
 	_LW	$t3,0($t0)	; Get word
@@ -552,10 +552,10 @@ Copy_To_StatBKG_ByteLoop:
 	addi	$t0,$t0,57	; Add rest of row
 	addi	$s0,$s0,-1	; Row --
 	_BNEZ	$s0,Copy_To_StatBKG_Loop
- 	POP	$s2
- 	POP	$s1
- 	POP	$s0
- 	_RTS
+	POP	$s2
+	POP	$s1
+	POP	$s0
+	_RTS
 
 ExpandScoreBkg:
 	; Fix Board Background from 8 bit palette colorto 16 bit color
@@ -574,7 +574,7 @@ ExpandScoreBkg:
 	sll	$t4,$t3,6	; * 64
 	add	$t0,$t0,$t4     ; = * 80 (80 words / row)
 	movi	$s0,48		; Row counter
-Copy_To_ScoreBKG_Loop	
+Copy_To_ScoreBKG_Loop
 	movi	$s1,23		; Col Counter
 Copy_To_ScoreBKG_RowLoop
 	_LW	$t3,0($t0)	; Get word
@@ -600,11 +600,11 @@ Copy_To_ScoreBKG_ByteLoop:
 	addi	$t0,$t0,57	; Add rest of row
 	addi	$s0,$s0,-1	; Row --
 	_BNEZ	$s0,Copy_To_ScoreBKG_Loop
- 	POP	$s2
- 	POP	$s1
- 	POP	$s0
- 	_RTS
- 	
+	POP	$s2
+	POP	$s1
+	POP	$s0
+	_RTS
+
 QuadGfx:
 	PUSH	$ra
 	PUSH	$a0	; Input to DrawBoard
@@ -622,8 +622,8 @@ QuadGfx_Loop:
 	_JAL	FixTopLines		; FixTopLines
 	mov	$a0,$s2			; Set Number of Lines
 	mov	$a1,$s1			; Set DeltaY
-	_JAL 	DrawBoard		; DrawBoard
-	addi	$s0,$s0,1		; Add one to delta 
+	_JAL	DrawBoard		; DrawBoard
+	addi	$s0,$s0,1		; Add one to delta
 	srl	$t0,$s0,2		; Half the speed (low gravity)
 	add	$s1,$s1,$t0		; Add delta to total
 	slti	$t0,$s1,32		; Is it above 32
@@ -667,9 +667,9 @@ FixTopLines_ColLoop:
 	lw	$t3,3($s0)
 	nop
 	sw	$t0,0($s1)		; Store
-	sw	$t1,1($s1)		
-	sw	$t2,2($s1)		
-	sw	$t3,3($s1)		
+	sw	$t1,1($s1)
+	sw	$t2,2($s1)
+	sw	$t3,3($s1)
 	addi	$s0,$s0,4		; Add BKG pointer
 	addi	$s1,$s1,4		; Add Workscreen pointer
 	addi	$t8,$t8,-1		; Dec ColCount
@@ -681,8 +681,8 @@ FixTopLine_NoTopLine:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	_RTS				; Return from subroutine	
-	
+	_RTS				; Return from subroutine
+
 RemoveRowsGfx:
 	; a0 = Number of Rows
 	PUSH	$ra
@@ -697,16 +697,16 @@ RemoveRowsGfx:
 	sll	$s3,$s3,3	; Multiply by 4 (4 frames between fadestart for one line to fade start for next)
 	mov	$s2,$a0		; Number of rows
 	sll	$s2,$s2,3	; Multiply by 4 (4 frames between fadestart for one line to fade start for next)
-	
+
 	movi	$a0,20		; Draw 20 Rows
 	movi	$a1,0		; DeltaY = 0
 	_JAL	DrawBoard	; Draw board
-	
+
 	_JAL	WaitGameNextFrame
 	movi	$a0,20		; Draw 20 Rows
 	movi	$a1,0		; DeltaY = 0
 	_JAL	DrawBoard	; Draw board
-	
+
 RemoveRowsGfx_Loop:
 	_JAL	WaitGameNextFrame
 	_LI	$s0,RemoveRow_Array
@@ -725,7 +725,7 @@ RemoveRowsGfx_RowLoop:
 	_BNEZ	$s4,RemoveRowsGfx_Loop		; Are we done
 	POP	$s4
 	POP	$s3
-	POP	$s2	
+	POP	$s2
 	POP	$s1
 	POP	$s0
 	POP	$a1
@@ -786,7 +786,7 @@ FadeRow_ColLoop:
 	mov	$v0,$s2
 	POP	$s4
 	POP	$s3
-	POP	$s2	
+	POP	$s2
 	POP	$s1
 	POP	$s0
 	POP	$a1
@@ -807,7 +807,7 @@ DrawBoard:
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
-	mov	$s2,$a0			; Set number of rows	
+	mov	$s2,$a0			; Set number of rows
 	_LI	$s0,Tetris_Board
 	movi	$a0,BOARD_LEFT
 	addi	$a1,$a1,BOARD_TOP	; Add DeltaY to BoardTop
@@ -822,10 +822,10 @@ DrawBoard_ColLoop:
 	_BNEZ	$a2,DrawBoard_ColorBox
 	_JAL	CopyBox
 	_J	DrawBoard_TestDone
-DrawBoard_ColorBox:	
+DrawBoard_ColorBox:
 	_JAL	DrawPieceBox		; DrawBox with texture
-DrawBoard_TestDone:		
-	addi	$s0,$s0,1		
+DrawBoard_TestDone:
+	addi	$s0,$s0,1
 	addi	$a0,$a0,8		; Add 8 to X
 	addi	$s1,$s1,-1		; Decrease col counter
 	_BNEZ	$s1,DrawBoard_ColLoop
@@ -868,13 +868,13 @@ DrawNextPiece:
 DrawNextPiece_Copy_Bkg_Row_Loop:
 	movi	$t8,9
 DrawNextPiece_Copy_Bkg_Col_Loop:
-	
+
 	_LW	$t2,0($t1)
 	_LW	$t3,1($t1)
 	_LW	$t4,2($t1)
 	_LW	$t5,3($t1)
 	_LW	$t6,4($t1)
-	
+
 	_SW	$t2,0($t0)
 	_SW	$t3,1($t0)
 	_SW	$t4,2($t0)
@@ -889,28 +889,28 @@ DrawNextPiece_Copy_Bkg_Col_Loop:
 	addi	$t1,$t1,1
 	addi	$t9,$t9,-1
 	_BNEZ	$t9,DrawNextPiece_Copy_Bkg_Row_Loop
-	
+
 	_LI	$a0,NextPiece_Txt
 	movi	$a1,NEXTPIECE_LEFT+4
 	movi	$a2,NEXTPIECE_TOP
 	movi	$a3,0xffff
 	_JAL	PrintString
-	
-	_LI	$t0,ShowNextPiece	
+
+	_LI	$t0,ShowNextPiece
 	_LW	$t1,0($t0)		; Should we show next piece ?
 	_BEQZ	$t1,DontShowNextPiece	; No, then dont do it !
-	_LI	$t0,NextPieceNumber	
+	_LI	$t0,NextPieceNumber
 	_LW	$t1,0($t0)		; Get Next piece number
-	_LI	$t2,Piece_Array		
+	_LI	$t2,Piece_Array
 	add	$t2,$t2,$t1
 	_LW	$s2,0($t2)		; And the corresponding piece data
-	movi	$s0,0			; X = 0 
-	movi	$s1,0			; Y = 0 
-	_LW	$a2,PIECE_COLOR($s2)	; Color	
+	movi	$s0,0			; X = 0
+	movi	$s1,0			; Y = 0
+	_LW	$a2,PIECE_COLOR($s2)	; Color
 	_LW	$s3,PIECE_HORDIFF($s2)	; Hordiff
 	_LW	$s4,PIECE_VERDIFF($s2)	; Verdiff
 DrawNextPiece_Loop:
-	_LW	$t0,0($s2)		; 
+	_LW	$t0,0($s2)		;
 	_BEQZ	$t0,NextPiece_BitNotSet	; Is bit set ? No, BitNotSet
 	mov	$a0,$s0			; a0 = X Count
 	sll	$a0,$a0,3		; a0 = a0 * 8
@@ -928,8 +928,8 @@ NextPiece_BitNotSet:
 	_BNEZ	$s0,DrawNextPiece_Loop	; X = 0 ? No, PieceLoop
 	addi	$s1,$s1,1		; Y = Y + 1
 	andi	$s1,$s1,0x0003		; Y = Y & 0x0003
-	_BNEZ	$s1,DrawNextPiece_Loop	; Y = 0 ? No, PieceLoop 
-DontShowNextPiece:		
+	_BNEZ	$s1,DrawNextPiece_Loop	; Y = 0 ? No, PieceLoop
+DontShowNextPiece:
 	POP	$s4			; Get from stack
 	POP	$s3
 	POP	$s2
@@ -968,13 +968,13 @@ DrawStat:
 DrawStat_Copy_Bkg_Row_Loop:
 	movi	$t8,9
 DrawStat_Copy_Bkg_Col_Loop:
-	
+
 	_LW	$t2,0($t1)
 	_LW	$t3,1($t1)
 	_LW	$t4,2($t1)
 	_LW	$t5,3($t1)
 	_LW	$t6,4($t1)
-	
+
 	_SW	$t2,0($t0)
 	_SW	$t3,1($t0)
 	_SW	$t4,2($t0)
@@ -1025,14 +1025,14 @@ DrawStat_Loop:
 	movi	$a1,STAT_LEFT
 	add	$a1,$a1,$s2
 	movi	$a2,STAT_TOP+STAT_HEIGHT
-	_JAL 	DrawStatBar
-		
+	_JAL	DrawStatBar
+
 DrawStat_NoStat:
 	addi	$s0,$s0,1
 	addi	$s2,$s2,12
 	addi	$s7,$s7,-1
 	_BNEZ	$s7,DrawStat_Loop
-	
+
 	POP	$s7			; Get from stack
 	POP	$s3
 	POP	$s2
@@ -1044,10 +1044,10 @@ DrawStat_NoStat:
 	POP	$a0
 	POP	$ra
 	_RTS				; Return from subroutine
-	
+
 DrawStatBar:
 	PUSH	$ra
-	
+
 	_JAL	GetWorkScreen
 	mov	$t1,$v0
 
@@ -1058,11 +1058,11 @@ DrawStatBar:
 	add	$t1,$t1,$t2
 	sll	$t2,$a2,7	; * 128
 	add	$t1,$t1,$t2
-	
+
 	sll	$t2,$a3,16
 	srl	$t3,$t2,16
 	or	$t8,$t3,$t2
-	
+
 	mov	$t9,$a0
 DrawStatBar_Loop:
 	_SW	$t8,0($t1)
@@ -1073,7 +1073,7 @@ DrawStatBar_Loop:
 	addi	$t1,$t1,-160
 	addi	$t9,$t9,-1
 	_BNEZ	$t9,DrawStatBar_Loop
-	
+
 	POP	$ra
 	_RTS
 
@@ -1097,13 +1097,13 @@ DrawScore:
 DrawScore_Copy_Bkg_Row_Loop:
 	movi	$t8,9
 DrawScore_Copy_Bkg_Col_Loop:
-	
+
 	_LW	$t2,0($t1)
 	_LW	$t3,1($t1)
 	_LW	$t4,2($t1)
 	_LW	$t5,3($t1)
 	_LW	$t6,4($t1)
-	
+
 	_SW	$t2,0($t0)
 	_SW	$t3,1($t0)
 	_SW	$t4,2($t0)
@@ -1137,7 +1137,7 @@ DrawScore_Copy_Bkg_Col_Loop:
 	movi	$a2,SCORE_TOP+SCORE_TXTHEIGHT
 	movi	$a3,0xffff
 	_JAL	PrintString
-	
+
 	_LI	$t0,LineCount
 	_LW	$a0,0($t0)
 	movi	$a1,SCORE_LEFT+SCORE_WIDTH-4
@@ -1150,7 +1150,7 @@ DrawScore_Copy_Bkg_Col_Loop:
 	movi	$a2,SCORE_TOP+SCORE_TXTHEIGHT*2
 	movi	$a3,0xffff
 	_JAL	PrintString
-	
+
 	_LI	$t0,Level
 	_LW	$a0,0($t0)
 	movi	$a1,SCORE_LEFT+SCORE_WIDTH-4
@@ -1180,10 +1180,10 @@ DrawCurrentPiece:
 	_LW	$s0,0($t0)
 	_LW	$s1,1($t0)
 	_LI	$s2,Current_Piece	; Piece address
-	movi	$s3,0			; X = 0 
-	movi	$s4,0			; Y = 0 
+	movi	$s3,0			; X = 0
+	movi	$s4,0			; Y = 0
 PieceLoop:
-	_LW	$t0,0($s2)		; 
+	_LW	$t0,0($s2)		;
 	_BEQZ	$t0,BitNotSet		; Is bit set ? No, BitNotSet
 	mov	$a0,$s3			; a0 = X Count
 	add	$a0,$a0,$s0		; a0 = a0 + X pos
@@ -1200,10 +1200,10 @@ BitNotSet:
 	addi	$s2,$s2,1		; Piece Address++
 	addi	$s3,$s3,1		; X = X + 1
 	andi	$s3,$s3,0x0003		; X = X & 0x0003
-	_BNEZ	$s3,PieceLoop 		; X = 0 ? No, PieceLoop
+	_BNEZ	$s3,PieceLoop		; X = 0 ? No, PieceLoop
 	addi	$s4,$s4,1		; Y = Y + 1
 	andi	$s4,$s4,0x0003		; Y = Y & 0x0003
-	_BNEZ	$s4,PieceLoop		; Y = 0 ? No, PieceLoop 	
+	_BNEZ	$s4,PieceLoop		; Y = 0 ? No, PieceLoop
 	POP	$s4			; Get from stack
 	POP	$s3
 	POP	$s2
@@ -1220,7 +1220,7 @@ DrawBox:
 	; a1 = y pos
 	; a2 = color
 	PUSH	$ra
-	
+
 	_JAL	GetWorkScreen
 	mov	$t1,$v0
 	srl	$t0,$a0,1		; X / 2
@@ -1233,14 +1233,14 @@ DrawBox:
 	add	$t1,$t1,$t0
 	movi	$t2,8			; RowCount = 8
 DrawBox_Loop:
-	sw	$t3,0($t1)		; Two pixels  X + 0 , X + 1 
-	sw	$t3,1($t1)		; Two pixels  X + 2 , X + 3 
-	sw	$t3,2($t1)		; Two pixels  X + 4 , X + 5 
-	sw	$t3,3($t1)		; Two pixels  X + 6 , X + 7 
+	sw	$t3,0($t1)		; Two pixels  X + 0 , X + 1
+	sw	$t3,1($t1)		; Two pixels  X + 2 , X + 3
+	sw	$t3,2($t1)		; Two pixels  X + 4 , X + 5
+	sw	$t3,3($t1)		; Two pixels  X + 6 , X + 7
 	addi	$t1,$t1,160		; Add one row
 	addi	$t2,$t2,-1		; Dec RowCount
 	_BNEZ	$t2,DrawBox_Loop	; Row Count = 0 ? No, BoxLoop
-	
+
 	POP	$ra
 	_RTS				; Return from subroutine
 
@@ -1278,11 +1278,11 @@ CopyBox_Loop:
 	nop
 	lw	$t3,3($s0)
 	nop
-	sw	$t0,0($s1)		; Two pixels  X + 0 , X + 1 
-	sw	$t1,1($s1)		; Two pixels  X + 2 , X + 3 
-	sw	$t2,2($s1)		; Two pixels  X + 4 , X + 5 
-	sw	$t3,3($s1)		; Two pixels  X + 6 , X + 7 
-	addi	$s0,$s0,40		
+	sw	$t0,0($s1)		; Two pixels  X + 0 , X + 1
+	sw	$t1,1($s1)		; Two pixels  X + 2 , X + 3
+	sw	$t2,2($s1)		; Two pixels  X + 4 , X + 5
+	sw	$t3,3($s1)		; Two pixels  X + 6 , X + 7
+	addi	$s0,$s0,40
 	addi	$s1,$s1,160		; Add one row
 	addi	$t9,$t9,-1		; Dec RowCount
 	_BNEZ	$t9,CopyBox_Loop	; Row Count = 0 ? No, BoxLoop
@@ -1296,7 +1296,7 @@ DrawPieceBox:
 	; a1 = Y Pos
 	; a2 = TextureData
 	PUSH	$ra
-	
+
 	_JAL	GetWorkScreen
 	mov	$t1,$v0
 	srl	$t0,$a0,1		; X / 2
@@ -1306,7 +1306,7 @@ DrawPieceBox:
 	sll	$t0,$a1,5		; Y * 32
 	add	$t6,$t1,$t0		; screenpointer in t6
 	mov	$t7,$a2			; mappingpointer in t7
-	movi	$t8,8			; RowCount = 8	
+	movi	$t8,8			; RowCount = 8
 DrawPieceBox_Loop:
 	lw	$t0,0($t7)
 	nop
@@ -1316,15 +1316,15 @@ DrawPieceBox_Loop:
 	nop
 	lw	$t3,3($t7)
 	nop
-	sw	$t0,0($t6)		; Two pixels  X + 0 , X + 1 
-	sw	$t1,1($t6)		; Two pixels  X + 2 , X + 3 
-	sw	$t2,2($t6)		; Two pixels  X + 4 , X + 5 
-	sw	$t3,3($t6)		; Two pixels  X + 6 , X + 7 
+	sw	$t0,0($t6)		; Two pixels  X + 0 , X + 1
+	sw	$t1,1($t6)		; Two pixels  X + 2 , X + 3
+	sw	$t2,2($t6)		; Two pixels  X + 4 , X + 5
+	sw	$t3,3($t6)		; Two pixels  X + 6 , X + 7
 	addi	$t6,$t6,160		; Add one row
 	addi	$t7,$t7,4		; Add one row
 	addi	$t8,$t8,-1		; Dec RowCount
-	_BNEZ	$t8,DrawPieceBox_Loop	; Row Count = 0 ? No, BoxLoop	
-	
+	_BNEZ	$t8,DrawPieceBox_Loop	; Row Count = 0 ? No, BoxLoop
+
 	POP	$ra
 	_RTS				; Return from subroutine
 
@@ -1352,17 +1352,17 @@ ClearBox_ColLoop:
 ####################
 # TetrIC Functions #
 ####################
-	
+
 GetScore:
 	_LI	$t0,Score
 	_LW	$v0,0($t0)
 	_RTS
-	
+
 GetLevel:
 	_LI	$t0,Level
 	_LW	$v0,0($t0)
 	_RTS
-	
+
 InitBoard:
 	; a0 = starthieght
 	PUSH	$ra
@@ -1372,10 +1372,10 @@ InitBoard:
 	PUSH	$s1
 	PUSH	$s2
 	PUSH	$s3
-	
+
 	_LI	$t0,Tetris_Board		; Get Board pointer
 	addi	$t0,$t0,13			; Add top row and left col
-	
+
 	movi	$t1,20				; 20 rows to clear
 ClearBoard_Loop:
 	_SW	$zero,0($t0)
@@ -1391,7 +1391,7 @@ ClearBoard_Loop:
 	addi	$t0,$t0,12			; Next row
 	addi	$t1,$t1,-1			; Row=Row-1
 	_BNEZ	$t1,ClearBoard_Loop		; Are we done ?
-	
+
 	_BEQZ	$a0,InitBoard_Done		; Do we have a startheight ?
 	mov	$s0,$a0
 
@@ -1410,7 +1410,7 @@ RowFill_Loop:
 	movi	$a1,10
 	_JAL	Divu16
 	mov	$s3,$v1				; s3 = Rnd(0,9)
-	add	$s3,$s3,$s2			
+	add	$s3,$s3,$s2
 	_LW	$t1,0($s3)			; Is this one set already ?
 	_BNEZ	$t1,RowFill_Loop		; Yes, get new rnadom value
 
@@ -1422,10 +1422,10 @@ RowFill_Loop:
 	add	$t0,$t0,$v1
 	_LW	$t1,0($t0)			; Get block pointer
 	_SW	$t1,0($s3)			; Store in board
-	
+
 	addi	$s1,$s1,-1			; Fill=Fill-1
 	_BNEZ	$s1,RowFill_Loop		; Are we done ?
-	
+
 	addi	$s2,$s2,-12			; One row up in board
 	addi	$s0,$s0,-1			; Row=Row-1
 	_BNEZ	$s0,StartHeight_Loop		; Are we done ?
@@ -1439,35 +1439,35 @@ InitBoard_Done:
 	POP	$a0
 	POP	$ra
 	_RTS
-	
+
 AddScore:
 	_LI	$t0,Score			; Get Score
 	_LW	$t1,0($t0)
-	
-	movi	$t4,20				
+
+	movi	$t4,20
 
 	_LI	$t2,Piece_Pos			; DropHeight Points (1 * DropHeight)
-	_LW	$t3,1($t2)			; 
+	_LW	$t3,1($t2)			;
 	sub	$t4,$t4,$t3
 
 	_LI	$t2,Current_Piece_ScoreDiff
 	_LW	$t3,0($t2)
 	sub	$t4,$t4,$t3
-	
+
 	_LI	$t2,Level			; Level Points (3 * Level)
 	_LW	$t3,0($t2)			; 1 * Level
-	sll	$t2,$t3,1			; + 2 * Level 
+	sll	$t2,$t3,1			; + 2 * Level
 	add	$t3,$t3,$t2			; = 3 * Level
 	add	$t4,$t4,$t3
-	
+
 	_LI	$t2,ShowNextPiece
 	_LW	$t3,0($t2)
 	_BNEZ	$t3,CheatModeOn
 	addi	$t4,$t4,5			; Cheat Mode OFF Points (5)
-CheatModeOn:					; 
-	add	$t1,$t1,$t4	
+CheatModeOn:					;
+	add	$t1,$t1,$t4
 	_SW	$t1,0($t0)
-	
+
 	_RTS
 
 CheckLevel:
@@ -1476,27 +1476,27 @@ CheckLevel:
 	PUSH	$a1
 	PUSH	$s0
 	PUSH	$s1
-	
+
 	_LI	$t0,LineCount
 	_LW	$t1,0($t0)
-	
+
 	_LI	$s0,Level
 	_LW	$s1,0($s0)
-	
+
 	movi	$t0,9
 	_BEQ	$t0,$s1,NoHigherLevel
-	
+
 	mov	$a0,$t1
 	movi	$a1,10
 	_JAL	Divu16		; _JAL Divu8
-	
+
 	_BGE	$s1,$v0,NoHigherLevel
-	
+
 	_BEQZ	$v1,NoHigherLevel
-	
+
 	addi	$s1,$s1,1
 	_SW	$s1,0($s0)
-	
+
 	movi	$a0,FX_GAME_CHANGELEVEL
 	_JAL	PlaySampleCh2
 
@@ -1507,30 +1507,30 @@ NoHigherLevel:
 	POP	$a0
 	POP	$ra
 	_RTS
-	
-	
+
+
 RemoveFullRows:
 	PUSH	$ra
 	PUSH	$a0
 	PUSH	$s0
 	PUSH	$s1
-	
+
 	_LI	$s0,RemoveRow_Array
-	
+
 	clr	$s1
-	
+
 	movi	$a0,20
 RowLoop:
 	addi	$a0,$a0,-1
 	_JAL	TestRow
 	_BEQZ	$v0,NotThisRow
-	
+
 	_SW	$a0,0($s0)
 	addi	$s0,$s0,1
 	addi	$s1,$s1,1
-NotThisRow:	
+NotThisRow:
 	_BNEZ	$a0,RowLoop
-	
+
 	_BEQZ	$s1,NoFullRows
 
 	movi	$a0,FX_GAME_ROW
@@ -1546,12 +1546,12 @@ NotThisRow:
 
 	movi	$t0,4
 	_BNE	$t0,$s1,NoQuadEffect
-	
+
 	_JAL	TestWeight		; Test weight above quad
 	_BEQZ	$v0,NoQuadEffect	; Zero ? Then ther is nothing to see
 	mov	$s0,$v0			; Store weigt result
 	_JAL	QuadGfx			; Drop slowly
-	
+
 	movi	$a0,FX_GAME_QUAD
 	_JAL	PlaySampleCh1
 
@@ -1561,8 +1561,8 @@ NotThisRow:
 	_SW	$zero,0($t0)
 NoQuadEffect:
 	mov	$a0,$s1
-	_JAL	RemoveRows	
-	
+	_JAL	RemoveRows
+
 NoFullRows:
 	POP	$s1
 	POP	$s0
@@ -1572,16 +1572,16 @@ NoFullRows:
 
 TestWeight:
 	clr	$v0			; Default Not Enough weight
-	
+
 	_LI	$t0,Tetris_Board	; Get Board
 	addi	$t0,$t0,13		; Not visible top roof
-	
+
 	_LI	$t1,RemoveRow_Array
 	_LW	$t9,3($t1)		; Last Row Number
 	_BEQZ	$t9,TestWeight_NoWeight
 TestWeight_RowLoop:
 	movi	$t8,10
-TestWeight_ColLoop:	
+TestWeight_ColLoop:
 	_LW	$t1,0($t0)
 	_BEQZ	$t1,TestWeight_NotSet
 	addi	$v0,$v0,1
@@ -1589,12 +1589,12 @@ TestWeight_NotSet:
 	addi	$t0,$t0,1
 	addi	$t8,$t8,-1
 	_BNEZ	$t8,TestWeight_ColLoop
-	addi	$t0,$t0,2	
+	addi	$t0,$t0,2
 	addi	$t9,$t9,-1
 	_BNEZ	$t9,TestWeight_RowLoop
-TestWeight_NoWeight:	
+TestWeight_NoWeight:
 	_RTS
-	
+
 ShakeBoard:
 	_LI	$t0,ShakeSin
 	_LI	$t1,ShakePointer
@@ -1607,7 +1607,7 @@ ShakeBoard:
 	addi	$t1,$t1,30
 	_SW	$t1,GFX_TOPPOS($gfx)
 	_RTS
-	
+
 TestRow:
 	movi	$v0,0			; Default not full
 
@@ -1618,19 +1618,19 @@ TestRow:
 	sll	$t1,$a0,2		;
 	add	$t0,$t0,$t1		;
 	addi	$t0,$t0,1		; Not first col
-	
-	movi	$t1,10			; Check next 10 
+
+	movi	$t1,10			; Check next 10
 TestRowLoop:
 	_LW	$t2,0($t0)		; What is this ?
 	_BEQZ	$t2,TestRowExit		; Zero ? Not full
-	
+
 	addi	$t0,$t0,1		; Next
 	addi	$t1,$t1,-1		; And less to go
-	
+
 	_BNEZ	$t1,TestRowLoop		; Are we done ?
-	
+
 	movi	$v0,1			; Return 1 for full
-	
+
 TestRowExit:
 	_RTS
 
@@ -1666,7 +1666,7 @@ RemoveRows_TopLoop:
 	sw	$zero,0($t1)		; Store zeros in the top row
 	addi	$t1,$t1,1		; Next piece
 	addi	$t8,$t8,-1		; one less to go
-	_BNEZ	$t8,RemoveRows_TopLoop	; Are we done with the top line 
+	_BNEZ	$t8,RemoveRows_TopLoop	; Are we done with the top line
 
 	addi	$t0,$t0,1			; Next Rows to delete
 	addi	$t9,$t9,1			; Rows + 1
@@ -1674,7 +1674,7 @@ RemoveRows_TopLoop:
 
 RemoveRows_Done:
 	_RTS
-	
+
 SetFallSpeed:
 	_LI	$t0,Level_FallSpeed_Array
 	_LI	$t1,Level
@@ -1688,14 +1688,14 @@ SetFallSpeed:
 PieceFall:
 	PUSH	$ra
 	PUSH	$s0
-	
+
 	_LI	$s0,FallSpeed
 	_LW	$t0,0($s0)
 	addi	$t0,$t0,-1
 	_SW	$t0,0($s0)
 	_BNEZ	$t0,PieceFallExit
 	_JAL	SetFallSpeed
-	
+
 	_JAL	DropOne
 	_BNEZ	$v0,PieceFallExit
 
@@ -1705,22 +1705,22 @@ PieceFall:
 PieceFallExit:
 	POP	$s0
 	POP	$ra
-	
+
 	_RTS
-	
+
 DropOne:
 	PUSH	$ra
 	PUSH	$a0
 	PUSH	$a1
 	PUSH	$a2
 	PUSH	$s0
-	
-	_LI	$s0,Piece_Pos	
+
+	_LI	$s0,Piece_Pos
 	_LW	$a1,0($s0)
 	_LW	$a2,1($s0)
 	addi	$a2,$a2,1
 	_SW	$a2,1($s0)
-	
+
 	_LI	$a0,Current_Piece
 	_JAL	TestPiece
 	_BNEZ	$v0,DropExit
@@ -1735,20 +1735,20 @@ DropExit:
 	POP	$ra
 
 	_RTS				; Return from subroutine
-	
+
 PutDownPiece:
 	PUSH	$ra
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
 	PUSH	$s3
-	
+
 	_LI	$s0,Piece_Pos
 	_LW	$t0,0($s0)
 	_LW	$t1,1($s0)
 
 	_LI	$s0,Current_Piece
-	
+
 	_LI	$s1,Tetris_Board
 	add	$s1,$s1,$t0
 	sll	$t2,$t1,3
@@ -1758,7 +1758,7 @@ PutDownPiece:
 
 	_LI	$t0,Current_Piece_color	;Get Current Piece Color
 	_LW	$t1,0($t0)
-	
+
 	movi	$s2,4
 PutDown_OuterLoop:
 	movi	$s3,4
@@ -1769,12 +1769,12 @@ PutDown_InnerLoop:
 PutDown_BitNotSet:
 	addi	$s0,$s0,1
 	addi	$s1,$s1,1
-	
+
 	addi	$s3,$s3,-1
 	_BNEZ	$s3,PutDown_InnerLoop
-	
+
 	addi	$s1,$s1,8
-	
+
 	addi	$s2,$s2,-1
 	_BNEZ	$s2,PutDown_OuterLoop
 
@@ -1783,7 +1783,7 @@ PutDown_BitNotSet:
 
 	_JAL	GetRandomPiece
 	_BNEZ	$v0,PutDownExit
-	
+
 	_LI	$t0,GameOver
 	movi	$t1,1
 	_SW	$t1,0($t0)
@@ -1793,7 +1793,7 @@ PutDownExit:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	
+
 	_RTS				; Return from subroutine
 
 
@@ -1802,17 +1802,17 @@ TestPiece:
 	; a1 = Test X Pos
 	; a2 = Test Y Pos
 	; v0 = 0 if Fail, 1 if OK
-		
+
 	movi	$v0,0
 	mov	$t0,$a0
-	
+
 	_LI	$t1,Tetris_Board
 	add	$t1,$t1,$a1
 	sll	$t2,$a2,3
 	add	$t1,$t1,$t2
 	sll	$t2,$a2,2
 	add	$t1,$t1,$t2
-	
+
 	movi	$t2,4
 Test_OuterLoop:
 	movi	$t3,4
@@ -1826,26 +1826,26 @@ Test_InnerLoop:
 Test_BitNotSet:
 	addi	$t0,$t0,1
 	addi	$t1,$t1,1
-	
+
 	addi	$t3,$t3,-1
 	_BNEZ	$t3,Test_InnerLoop
-	
+
 	addi	$t1,$t1,8
-	
+
 	addi	$t2,$t2,-1
 	_BNEZ	$t2,Test_OuterLoop
 	movi	$v0,1
-	
+
 Test_Exit:
 	_RTS				; Return from subroutine
-	
+
 GetRandomPiece:
 	PUSH	$ra			; Store to stack
 	PUSH	$a0
 	PUSH	$a1
 	PUSH	$s0
 	PUSH	$s1
-	
+
 	_JAL	SetFallSpeed		; Initiate fallspeed
 
 	_JAL	Rnd			; Get Random number
@@ -1855,22 +1855,22 @@ GetRandomPiece:
 
 	# Debug
 	# movi	$v1,1 ; Only red ones
-	
-	_LI	$t0,NextPieceNumber		
+
+	_LI	$t0,NextPieceNumber
 	_LW	$t1,0($t0)		; Get ThisPieceNumber
 	_SW	$v1,0($t0)		; Store NextPieceNumber
 
 	_LI	$t2,Stat
 	add	$t2,$t2,$t1		; Get current piece
-	_LW	$t3,0($t2)	
+	_LW	$t3,0($t2)
 	addi	$t3,$t3,1		; Add 1 to the current piece count
-	_SW	$t3,0($t2)	
-	
+	_SW	$t3,0($t2)
+
 	_LI	$s0,Piece_Array		; Piece Array address
-	add	$s0,$s0,$t1		
+	add	$s0,$s0,$t1
 	_LW	$a0,0($s0)		; Get Piece pointer
-	_LI	$a1,Current_Piece	; Current Pice address Destination Piece 
-	_JAL	CopyPiece		; Copy Piece t0,t1,t2,t3 
+	_LI	$a1,Current_Piece	; Current Pice address Destination Piece
+	_JAL	CopyPiece		; Copy Piece t0,t1,t2,t3
 
 	_LI	$t1,Current_Piece_Size		; Calc Piece start pos X
 	_LW	$t0,0($t1)			; Get Piece width
@@ -1881,52 +1881,52 @@ GetRandomPiece:
 	_LI	$t2,Current_Piece_StartDiff	; Calc Piece start pos Y
 	_LW	$t1,0($t2)			; Get Piece startheight
 	_LI	$s0,Piece_Pos			; Write to piece position
-	_SW	$t0,0($s0)			
+	_SW	$t0,0($s0)
 	_SW	$t1,1($s0)
-	
-	_LI	$a0,Current_Piece	; Current Piece address Destination Piece 	
+
+	_LI	$a0,Current_Piece	; Current Piece address Destination Piece
 	mov	$a1,$t0
 	mov	$a2,$t1
 	_JAL	TestPiece
-	
+
 	POP	$s1
 	POP	$s0
 	POP	$a1
 	POP	$a0
 	POP	$ra
-	
+
 	_RTS				; Return from subroutine
-	
+
 CopyPiece:
 	; a0 = Source Piece
 	; a1 = Destination Piece
-	
-	PUSH 	$a0
-	PUSH 	$a1
+
+	PUSH	$a0
+	PUSH	$a1
 	PUSH	$s0
 	PUSH	$s1
-	
+
 	movi	$s0,PIECE_SIZETOTAL	; Copy the size of a Piece struct
 CopyLoop:
 	_LW	$s1,0($a0)		; Load from source
 	addi	$a0,$a0,1		; Inc source adddress
-	_SW	$s1,0($a1) 		; Store to destination
+	_SW	$s1,0($a1)		; Store to destination
 	addi	$a1,$a1,1		; Inc destination address
-	
+
 	addi	$s0,$s0,-1		; Dec words to copy
 	_BNEZ	$s0,CopyLoop		; Finished ? CopyLoop
-	
+
 	POP	$s1
 	POP	$s0
 	POP	$a1
 	POP	$a0
-	
+
 	_RTS				; Return from subroutine
 
 SoftDrop:
 	PUSH	$ra
 	_JAL	SetFallSpeed
-	
+
 	_JAL	DropOne			; Gravity on the TetrisBlock
 	_BNEZ	$v0,SoftDropExit
 	_JAL	AddScore
@@ -1946,7 +1946,7 @@ HardDrop:
 	_JAL	PlaySampleCh1
 
 	_JAL	AddScore
-	_JAL	SetFallSpeed	
+	_JAL	SetFallSpeed
 DropLoop:
 	_JAL	DropOne
 	_BNEZ	$v0,DropLoop
@@ -1966,16 +1966,16 @@ MoveLeft:
 	PUSH	$a1
 	PUSH	$a2
 	PUSH	$s0
-	
-	_LI	$s0,Piece_Pos	
+
+	_LI	$s0,Piece_Pos
 	_LW	$a1,0($s0)
 	_LW	$a2,1($s0)
 	addi	$a1,$a1,-1
-	
+
 	_LI	$a0,Current_Piece
 	_JAL	TestPiece
 	_BEQZ	$v0,MoveLeft_NotOK
-	
+
 	_SW	$a1,0($s0)
 MoveLeft_NotOK:
 	POP	$s0
@@ -1992,16 +1992,16 @@ MoveRight:
 	PUSH	$a1
 	PUSH	$a2
 	PUSH	$s0
-	
-	_LI	$s0,Piece_Pos	
+
+	_LI	$s0,Piece_Pos
 	_LW	$a1,0($s0)
 	_LW	$a2,1($s0)
 	addi	$a1,$a1,1
-	
+
 	_LI	$a0,Current_Piece
 	_JAL	TestPiece
 	_BEQZ	$v0,MoveRight_NotOK
-	
+
 	_SW	$a1,0($s0)
 MoveRight_NotOK:
 	POP	$s0
@@ -2019,19 +2019,19 @@ RotateCW:
 	PUSH	$a2
 
 	_JAL	RotatePiece_CW
-	
+
 	_LI	$a0,Temp_Piece
-	_LI	$t0,Piece_Pos	
+	_LI	$t0,Piece_Pos
 	_LW	$a1,0($t0)
 	_LW	$a2,1($t0)
-	
+
 	_JAL	TestPiece
 	_BEQZ	$v0,RotateCW_NotOK
 
 	_LI	$a0,Temp_Piece
 	_LI	$a1,Current_Piece
 	_JAL	CopyPiece
-	
+
 	movi	$a0,FX_GAME_ROTATE
 	_JAL	PlaySampleCh1
 
@@ -2042,7 +2042,7 @@ RotateCW_NotOK:
 	POP	$ra
 
 	_RTS				; Return from subroutine
-	
+
 RotateCCW:
 	PUSH	$ra
 	PUSH	$a0
@@ -2050,12 +2050,12 @@ RotateCCW:
 	PUSH	$a2
 
 	_JAL	RotatePiece_CCW
-	
+
 	_LI	$a0,Temp_Piece
-	_LI	$t0,Piece_Pos	
+	_LI	$t0,Piece_Pos
 	_LW	$a1,0($t0)
 	_LW	$a2,1($t0)
-	
+
 	_JAL	TestPiece
 	_BEQZ	$v0,RotateCCW_NotOK
 
@@ -2065,7 +2065,7 @@ RotateCCW:
 
 	movi	$a0,FX_GAME_ROTATE
 	_JAL	PlaySampleCh1
-	
+
 RotateCCW_NotOK:
 	POP	$a2
 	POP	$a1
@@ -2078,7 +2078,7 @@ PrepareRotate:
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
-	
+
 	_LI	$s0,Current_Piece_ExtraData
 	_LI	$s1,Temp_Piece_ExtraData
 	movi	$s2,PIECE_SIZEEXTRADATA
@@ -2089,10 +2089,10 @@ PrepareRotate_Loop:
 	addi	$s1,$s1,1
 	addi	$s2,$s2,-1
 	_BNEZ	$s2,PrepareRotate_Loop
-	
+
 	_LI	$s0,Current_Piece_ScoreDiff	; Rotate ScoreDiff
 	_LI	$s1,Temp_Piece_ScoreDiff
-	
+
 	_LW	$t0,1($s0)
 	_SW	$t0,0($s1)
 	_LW	$t0,0($s0)
@@ -2100,13 +2100,13 @@ PrepareRotate_Loop:
 
 	_LI	$s0,Current_Piece_Size		; Rotate PieceSize
 	_LI	$s1,Temp_Piece_Size
-	
+
 	_LW	$t0,0($s0)
 	_SW	$t0,1($s1)
 	_LW	$t0,1($s0)
 	_SW	$t0,0($s1)
 
-	POP	$s2	
+	POP	$s2
 	POP	$s1
 	POP	$s0
 
@@ -2119,13 +2119,13 @@ RotatePiece_CW:
 	PUSH	$s2
 	PUSH	$s3
 	PUSH	$s4
-	
+
 	_JAL	PrepareRotate
-	
+
 	_LI	$s0,Current_Piece_Size		; Get Piece height
 	_LW	$t0,1($s0)
 	mov	$s2,$t0
-	
+
 	_LI	$s0,Temp_Piece
 	movi	$s3,16
 Clear_Temp_CW:
@@ -2149,23 +2149,23 @@ Row_Loop_CW:
 
 	_LI	$s0,Current_Piece
 	_LI	$s1,Temp_Piece
-	
+
 				; Current_Piece(x,y)
 	add	$s0,$s0,$s3	; add X
 	sll	$t0,$s4,2	; 4 * Y
 	add	$s0,$s0,$t0	; add 4 * Y
-	
+
 				; Temp_Piece(height-y-1,x)
-	mov	$t0,$s2		; Height	
+	mov	$t0,$s2		; Height
 	sub	$t0,$t0,$s4	; -Y
 	addi	$t0,$t0,-1	; -1
 	add	$s1,$s1,$t0	; Add Height-Y-1
 	sll	$t0,$s3,2	; 4 * X
 	add	$s1,$s1,$t0	; Add 4 * X
-	
+
 	_LW	$t0,0($s0)
 	_SW	$t0,0($s1)
-	
+
 	_BNEZ	$s4,Row_Loop_CW
 	_BNEZ	$s3,Col_Loop_CW
 
@@ -2175,9 +2175,9 @@ Row_Loop_CW:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	
+
 	_RTS				; Return from subroutine
-	
+
 RotatePiece_CCW:
 	PUSH	$ra
 	PUSH	$s0
@@ -2185,16 +2185,16 @@ RotatePiece_CCW:
 	PUSH	$s2
 	PUSH	$s3
 	PUSH	$s4
-	
+
 	_JAL	PrepareRotate
-	
+
 	_LI	$s0,Current_Piece_Size	; Get Piece width
 	_LW	$t0,0($s0)
 	mov	$s2,$t0
-	
+
 	_LI	$s0,Temp_Piece
 	movi	$s3,16
-	
+
 Clear_Temp_CCW:
 	_SW	$zero,0($s0)
 	addi	$s0,$s0,1
@@ -2216,23 +2216,23 @@ Row_Loop_CCW:
 
 	_LI	$s0,Current_Piece
 	_LI	$s1,Temp_Piece
-	
+
 				; Current_Piece(x,y)
 	add	$s0,$s0,$s3	; add X
 	sll	$t0,$s4,2	; 4 * Y
 	add	$s0,$s0,$t0	; add 4 * Y
-	
+
 				; Temp_Piece(y,width-x-1)
-	add	$s1,$s1,$s4	; add Y	
+	add	$s1,$s1,$s4	; add Y
 	mov	$t0,$s2		; width
 	sub	$t0,$t0,$s3	; -X
 	addi	$t0,$t0,-1	; -1
 	sll	$t0,$t0,2	; 4*(width-X-1)
 	add	$s1,$s1,$t0	; add 4*(width-X-1)
-	
+
 	_LW	$t0,0($s0)
 	_SW	$t0,0($s1)
-	
+
 	_BNEZ	$s4,Row_Loop_CCW
 	_BNEZ	$s3,Col_Loop_CCW
 
@@ -2242,7 +2242,7 @@ Row_Loop_CCW:
 	POP	$s1
 	POP	$s0
 	POP	$ra
-	
+
 	_RTS				; Return from subroutine
 
 ###############
@@ -2250,8 +2250,8 @@ Row_Loop_CCW:
 ###############
 
 Stat:			.dc	0,0,0,0,0,0,0
-			.dc	0x029c,0xe1c0,0x067c,0xe031,0xaf20,0x072a,0xdba0 
-			
+			.dc	0x029c,0xe1c0,0x067c,0xe031,0xaf20,0x072a,0xdba0
+
 FallSpeed:		.dc	0
 Score:			.dc	0
 LineCount:		.dc	0
@@ -2265,16 +2265,16 @@ BlockPointer_Array:	.dc	BlockGfx1,BlockGfx2,BlockGfx7,BlockGfx5,BlockGfx6,BlockG
 
 Piece_Pos:		.dc	0,0
 
-Current_Piece: 		.dc	0,0,0,0
+Current_Piece:		.dc	0,0,0,0
 			.dc	0,0,0,0
 			.dc	0,0,0,0
 			.dc	0,0,0,0
 Current_Piece_Size:	.dc	0,0
-Current_Piece_ScoreDiff: 	.dc	0,0
+Current_Piece_ScoreDiff:	.dc	0,0
 Current_Piece_ExtraData:
 Current_Piece_StartDiff:	.dc	0
 Current_Piece_Color:	.dc	0
-	
+
 Temp_Piece:		.dc	0,0,0,0
 			.dc	0,0,0,0
 			.dc	0,0,0,0
@@ -2284,7 +2284,7 @@ Temp_Piece_ScoreDiff:	.dc	0,0
 Temp_Piece_ExtraData:
 Temp_Piece_StartDiff:	.dc	0
 Temp_Piece_Color:	.dc	0
-	
+
 Piece_Array:
 	.dc	PieceO,PieceI,PieceZ,PieceS,PieceL,PieceJ,PieceT
 
@@ -2293,29 +2293,29 @@ PIECE_SIZE = 16			; 4x4 = 16
 PIECE_SCOREDIFF = 18		; Scorediff position in array
 PIECE_STARTDIFF = 20		; Startdiff position in array
 PIECE_COLOR = 21		; PieceColor position in array
-PIECE_HORDIFF = 22		; Horizontal slide for showing nextpiece 
-PIECE_VERDIFF = 23		; Vertical slide for showing nextpiece 
+PIECE_HORDIFF = 22		; Horizontal slide for showing nextpiece
+PIECE_VERDIFF = 23		; Vertical slide for showing nextpiece
 PIECE_SIZETOTAL = 24		; The total size of the array
 PIECE_SIZEEXTRADATA = 2		; SCOREDIFF and STARTDIFF size
-	
+
 PieceO:
 	.dc	1,1,0,0
 	.dc	1,1,0,0
 	.dc	0,0,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	2,2
 	.dc	0,0
 	.dc	1
 	.dc	BlockGfx2
 	.dc	8,8
-	
+
 PieceI:
 	.dc	0,0,0,0
 	.dc	1,1,1,1
 	.dc	0,0,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	4,3
 	.dc	1,1
 	.dc	0
@@ -2327,61 +2327,61 @@ PieceZ:
 	.dc	0,1,1,0
 	.dc	0,0,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	3,2
 	.dc	0,1
 	.dc	1
 	.dc	BlockGfx4
 	.dc	4,8
-	
+
 PieceS:
 	.dc	0,1,1,0
 	.dc	1,1,0,0
 	.dc	0,0,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	3,2
 	.dc	0,1
 	.dc	1
 	.dc	BlockGfx5
 	.dc	4,8
-	
+
 PieceL:
 	.dc	0,0,0,0
 	.dc	1,1,1,0
 	.dc	1,0,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	3,3
 	.dc	1,1
 	.dc	0
 	.dc	BlockGfx6
 	.dc	4,0
-	
+
 PieceJ:
 	.dc	0,0,0,0
 	.dc	1,1,1,0
 	.dc	0,0,1,0
 	.dc	0,0,0,0
-	
+
 	.dc	3,3
 	.dc	1,1
 	.dc	0
 	.dc	BlockGfx3
 	.dc	4,0
-	
+
 PieceT:
 	.dc	0,0,0,0
 	.dc	1,1,1,0
 	.dc	0,1,0,0
 	.dc	0,0,0,0
-	
+
 	.dc	3,3
 	.dc	1,1
 	.dc	0
 	.dc	BlockGfx7
 	.dc	4,0
-	
+
 Tetris_Board:
 	.dc	1,1,1,1,1,1,1,1,1,1,1,1
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
@@ -2400,7 +2400,7 @@ Tetris_Board:
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
-	
+
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
 	.dc	1,0,0,0,0,0,0,0,0,0,0,1
@@ -2426,7 +2426,7 @@ BlockGfx2:	.file	Data/img_blockblue.raw 32
 BlockGfx3:	.file	Data/img_blockgreen.raw 32
 BlockGfx4:	.file	Data/img_blockcyan.raw 32
 BlockGfx5:	.file	Data/img_blockpink.raw 32
-BlockGfx6:	.file	Data/img_blockyellow.raw 32 
+BlockGfx6:	.file	Data/img_blockyellow.raw 32
 BlockGfx7:	.file	Data/img_blockorange.raw 32
 
 ##############
@@ -2434,12 +2434,11 @@ BlockGfx7:	.file	Data/img_blockorange.raw 32
 ##############
 
 TetrisPic:	.file	Data/img_kremlin320x256x8c.raw 20480
-TetrisPal	.file	Data/img_Kremlin320x256x8c.pal 128
+TetrisPal	.file	Data/img_kremlin320x256x8c.pal 128
 
 ##############
 # ShakeTable #
 ##############
 
-ShakeSin:	.file	Data/data_ShakeSin.raw 64
+ShakeSin:	.file	Data/data_shakesin.raw 64
 ShakePointer:	.dc	63
-

@@ -1,10 +1,9 @@
-
 IntroDone:	.dc	0
 NextMode:	.dc	0
 
 StartIntro:
 	PUSH	$ra
-	
+
 	_JAL	PlayBeat
 
 	_LI	$t0,MenuVal
@@ -12,20 +11,20 @@ StartIntro:
 	sw	$zero,1($t0)
 	sw	$zero,2($t0)
 	sw	$zero,3($t0)
-	
+
 
 	_STA	$zero,IntroDone
-	
+
 	_JAL	ClearScreen
 	_JAL	Drawbackground
 	_JAL	WaitNextFrame
 	_JAL	ClearScreen
 	_JAL	DrawBackground
 	_JAL	WaitNextFrame
-	
+
 	_JAL	InitScroll
 	_JAL	StartMorph
-		
+
 	_LI	$t0,JoyRepeatWait
 	_LI	$t1,0x000a02			; Filter = 00, RepeatVal = 0a, Accelerate = 2
 	nop
@@ -46,33 +45,33 @@ StartIntro_Loop:
 	_LDA	$t0,NextMode
 	movi	$t1,VIEWHIGHSCOREMODE
 	_BEQ	$t0,$t1,DontStopBeat
-	_JAL	StopBeat	
+	_JAL	StopBeat
 DontStopBeat:
 	_JAL	IntroFadeOut
 	_JAL	ScreenFadeOut
 	POP	$ra
 	_RTS
-	
+
 IntroFrame:
 	PUSH	$ra
 	_JAL	WaitNextFrame
 	_JAL	FadeBeat
 	_JAL	MenuJoyStick
-		
+
 	_JAL	ClearIntroScreen
-	
+
 	_JAL	DrawMenu
 	movi	$a0,FADE_UP		; Dont fade out MorphFrame
 	_JAL	MorphFrame
 	movi	$a0,FADE_UP		; Dont fade out MorphFrame
 	_JAL	Scroll
-		
+
 	_LDA	$v0,IntroDone
 	POP	$ra
 	_RTS
 
 IntroFadeOut:
-	PUSH	$ra	
+	PUSH	$ra
 	PUSH	$s0
 IntroFadeOut_Loop:
 	clr	$s0
@@ -90,7 +89,7 @@ IntroFadeOut_Loop:
 	POP	$s0
 	POP	$ra
 	_RTS
-	
+
 BLUEBLOCKHEIGHT = 30
 BLUEBLOCKCOLOR = 0x0004
 REDLINECOLOR = 0xf800
@@ -100,10 +99,10 @@ DrawBackground:
 	PUSH	$s0
 	PUSH	$s1
 	PUSH	$s2
-	
+
 	moviu	$a0,BLUEBLOCKCOLOR
 	_JAL	SetColor
-	
+
 	movi	$a0,0
 	movi	$a1,0
 	movi	$a2,320
@@ -118,19 +117,19 @@ DrawBackground:
 
 	moviu	$a0,REDLINECOLOR
 	_JAL	SetColor
-	
+
 	movi	$a0,0
 	movi	$a1,BLUEBLOCKHEIGHT
 	movi	$a2,319
 	movi	$a3,BLUEBLOCKHEIGHT
 	_JAL	Line
-	
+
 	movi	$a0,0
 	movi	$a1,255-BLUEBLOCKHEIGHT
 	movi	$a2,319
 	movi	$a3,255-BLUEBLOCKHEIGHT
 	_JAL	Line
-		
+
 	POP	$s2
 	POP	$s1
 	POP	$s0
@@ -139,10 +138,10 @@ DrawBackground:
 
 ClearIntroScreen:
 	PUSH	$ra
-	
+
 	_JAL	GetWorkScreen
 	mov	$t0,$v0
-	
+
 	addi	$t0,$t0,160*60
 	movi	$t1,140
 ClearIntroScreen_Loop:
@@ -170,16 +169,16 @@ ClearIntroScreen_Loop2:
 	addi	$t0,$t0,80
 	addi	$t1,$t1,-1
 	_BNEZ	$t1,ClearIntroScreen_Loop
-	
+
 	POP	$ra
 	_RTS
-	
+
 MenuJoystick:
 	PUSH	$ra				; Store to stack
-	
+
 	_JAL	CheckJoystick
 	mov	$t5,$v0
-	
+
 	_LI	$t1,MenuVal
 	_LW	$t2,0($t1)
 	_LW	$t3,1($t1)
@@ -230,9 +229,9 @@ noMenuButC:
 	_SW	$t3,1($t1)
 	_SW	$t4,2($t1)
 
-	POP	$ra	
+	POP	$ra
 	_RTS				; Return from subroutine
-	
+
 MENU_XPOS = 130
 MENU_YPOS = 70
 
@@ -243,10 +242,10 @@ DrawMenu:
 	PUSH	$s2
 	PUSH	$s3
 	PUSH	$s4
-	
+
 	_LI	$s3,MenuVal
 	_LW	$s4,0($s3)
-	
+
 	slt	$t0,$s4,$zero
 	_BEQZ	$t0,Menu_ChoiceNotToLow
 	addi	$s4,$s4,1
@@ -284,14 +283,14 @@ Menu_ValNotToLow:
 	_LW	$t2,3($s0)
 	slt	$t0,$t2,$t1
 	_BEQZ	$t0,Menu_ValNotToHigh
-	addi	$t1,$t1,-1	
+	addi	$t1,$t1,-1
 Menu_ValNotToHigh:
 	_SW	$t1,2($s0)
 	_SW	$t1,1($s3)
 	_LDA	$t0,MenuOldVal
 	_STA	$t1,MenuOldVal
 	_BEQ	$t0,$t1,DrawMenu_Draw
-	
+
 	_LI	$s0,Menu
 	_LW	$a0,MENU_SFX($s0)
 	_JAL	EnableFX		; Turn On/Off SFX
@@ -305,8 +304,8 @@ DrawMenu_Draw:
 	_LI	$s0,Menu
 	movi	$s2,MENU_YPOS
 	sll	$s4,$s4,2
-	add	$s4,$s4,$s0	
-Menu_GetItem:	
+	add	$s4,$s4,$s0
+Menu_GetItem:
 	_LW	$t0,0($s0)
 	_BEQZ	$t0,Menu_Done
 	moviu	$a3,0x7bef
@@ -318,11 +317,11 @@ Menu_NotHighlight:
 	mov	$a2,$s2
 	_JAL	PrintString
 	_LW	$t0,1($s0)
-	_BEQZ	$t0,Menu_NextItem	
+	_BEQZ	$t0,Menu_NextItem
 	_LW	$t1,2($s0)
 	add	$a0,$t0,$t1
 	addi	$a1,$a1,18*8
-	_JAL	PrintString	
+	_JAL	PrintString
 Menu_NextItem:
 	addi	$s0,$s0,4
 	addi	$s2,$s2,16
@@ -335,7 +334,7 @@ Menu_Done:
 	_LW	$t0,0($s3)
 	_LW	$t1,2($s3)
 	_BEQZ	$t1,Menu_NoButton
-	
+
 	movi	$t1,PLAYGAMEROW
 	movi	$t2,GAMEMODE
 	_BEQ	$t0,$t1,Menu_ModeDone
@@ -354,7 +353,7 @@ Menu_ModeDone:
 	movi	$t0,1
 	_STA	$t0,IntroDone
 Menu_NoNewMode:
-	
+
 Menu_NoButton:
 	POP	$s4
 	POP	$s3
@@ -367,12 +366,12 @@ Menu_NoButton:
 GetNextMode:
 	_LDA	$v0,NextMode
 	_RTS
-	
-GetStartLevel:	
+
+GetStartLevel:
 	_LI	$t1,Menu
 	_LW	$v0,MENU_STARTLEVEL($t1)
 	_RTS
-	
+
 GetShowNextPiece:
 	_LI	$t1,Menu
 	_LW	$v0,MENU_SHOWNEXTPIECE($t1)
@@ -408,7 +407,7 @@ MENU_MUSIC = 18
 MENU_SFX = 22
 
 TetrisString:	.ascii	"TetrIC 2002"
-PlayString:	.ascii	"Play TetrIC"	
+PlayString:	.ascii	"Play TetrIC"
 LevelString:	.ascii	"Start Level"
 LevelList:	.ascii	"0"
 		.ascii	"1"
@@ -435,4 +434,3 @@ SFXString:	.ascii	"SFX"
 SFXList:	.ascii	"Off"
 		.ascii	"On "
 ShowHighString:	.ascii	"Show Highscore"
-
