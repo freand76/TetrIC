@@ -38,18 +38,18 @@
 			../TLib/Text.s \
 			../TLib/Gfx.s \
 			../TLib/Sound.s \
+			Game.s \
+			Intro.s \
+			ViewHigh.s \
 			Vector.s \
 			FXMusic.s \
 			ModeSwitch.s \
-			Intro.s \
 			EnterHigh.s \
-			ViewHigh.s \
 			Stars.s \
 			ScrollText.s \
 			HighScoreList.s \
 			Bars.s \
-			BootLoad.s \
-			Game.s
+			BootLoad.s
 
 # Assembler files created by lcc
 	LCCASM =
