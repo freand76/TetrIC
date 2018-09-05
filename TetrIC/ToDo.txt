@@ -1,0 +1,3 @@
+* Startupscreen
+ - TetrIC logga
+ - Bootload shortcut
